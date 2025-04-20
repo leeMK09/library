@@ -7,7 +7,9 @@ public class Book {
 
     private final Author author;
 
-    public Book(String title, Author author) {
+    private final BookCategories categories;
+
+    public Book(String title, Author author, BookCategories categories) {
         if (title == null || title.isBlank()) {
             throw BookException.blankTitle();
         }
@@ -16,8 +18,13 @@ public class Book {
             throw BookException.emptyAuthor();
         }
 
+        if (categories == null) {
+            throw BookException.emptyCategories();
+        }
+
         this.title = title;
         this.author = author;
+        this.categories = categories;
     }
 
     public String getTitle() {

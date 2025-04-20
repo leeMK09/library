@@ -14,4 +14,8 @@ public class BookException extends RuntimeException {
     public static BookException emptyAuthor() {
         return new BookException(ErrorMessage.AUTHOR_EMPTY);
     }
+
+    public static BookException emptyCategories() {
+        return new BookException(ErrorMessage.BOOK_CATEGORIES_BLANK);
+    }
 }
