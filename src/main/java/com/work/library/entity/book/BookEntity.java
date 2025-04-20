@@ -1,5 +1,8 @@
 package com.work.library.entity.book;
 
+import com.work.library.domain.book.Author;
+import com.work.library.domain.book.Book;
+import com.work.library.domain.book.BookCategories;
 import com.work.library.domain.book.BookStatus;
 import com.work.library.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -27,9 +30,16 @@ public class BookEntity extends BaseEntity {
 
     protected BookEntity() {}
 
-    public BookEntity(String author, String title) {
-        this.author = author;
+    public BookEntity(String title, String author) {
         this.title = title;
+        this.author = author;
+    }
+
+    public BookEntity(Long id, String title, String author, BookStatus status) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.status = status;
     }
 
     public Long getId() {
@@ -46,5 +56,10 @@ public class BookEntity extends BaseEntity {
 
     public BookStatus getStatus() {
         return status;
+    }
+
+    public Book toDomain(BookCategories categories) {
+        Author authorDomain = new Author(author);
+        return new Book(id, title, authorDomain, categories);
     }
 }

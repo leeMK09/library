@@ -1,11 +1,23 @@
 package com.work.library.domain.category;
 
 import com.work.library.domain.category.exception.InvalidCategoryException;
+import com.work.library.entity.category.CategoryEntity;
 
 import java.util.Objects;
 
 public class Category {
+    private Long id;
+
     private final String name;
+
+    public Category(Long id, String name) {
+        if (name == null || name.isBlank()) {
+            throw InvalidCategoryException.blankName();
+        }
+
+        this.id = id;
+        this.name = name;
+    }
 
     public Category(String name) {
         if (name == null || name.isBlank()) {
@@ -13,6 +25,18 @@ public class Category {
         }
 
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public CategoryEntity toRegisteredEntity() {
+        return new CategoryEntity(id, name);
+    }
+
+    public CategoryEntity toEntity() {
+        return new CategoryEntity(name);
     }
 
     @Override

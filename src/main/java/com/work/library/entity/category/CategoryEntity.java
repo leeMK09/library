@@ -1,5 +1,6 @@
 package com.work.library.entity.category;
 
+import com.work.library.domain.category.Category;
 import com.work.library.entity.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
@@ -22,11 +23,20 @@ public class CategoryEntity extends BaseEntity {
         this.name = name;
     }
 
+    public CategoryEntity(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Category toDomain() {
+        return new Category(id, name);
     }
 }
