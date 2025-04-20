@@ -1,6 +1,6 @@
 package com.work.library.domain.book.exception;
 
-import com.work.library.domain.book.ErrorMessage;
+import com.work.library.domain.ErrorMessage;
 
 public class InvalidAuthorException extends RuntimeException {
     public InvalidAuthorException(String message) {

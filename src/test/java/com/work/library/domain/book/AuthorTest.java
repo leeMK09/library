@@ -1,5 +1,6 @@
 package com.work.library.domain.book;
 
+import com.work.library.domain.ErrorMessage;
 import com.work.library.domain.book.exception.InvalidAuthorException;
 import org.junit.jupiter.api.Test;
 
