@@ -1,0 +1,30 @@
+package com.work.library.domain.category;
+
+import com.work.library.domain.category.exception.InvalidCategoryException;
+
+import java.util.Objects;
+
+public class Category {
+    private final String name;
+
+    public Category(String name) {
+        if (name == null || name.isBlank()) {
+            throw InvalidCategoryException.blankName();
+        }
+
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(name, category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+}
