@@ -15,6 +15,13 @@ class AuthorTest {
     }
 
     @Test
+    void 빈_이름으로_Author를_생성하면_예외가_발생한다() {
+        InvalidAuthorException exception = assertThrows(InvalidAuthorException.class, () -> new Author(" "));
+
+        assertEquals(ErrorMessage.AUTHOR_BLANK, exception.getMessage());
+    }
+
+    @Test
     void 유효한_이름으로_Author를_생성하면_정상적으로_생성된다() {
         String name = "김영한";
         Author author = new Author(name);
