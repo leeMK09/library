@@ -32,7 +32,7 @@ class BookCategoriesTest {
 
     @Test
     void 하나의_책에_같은_카테고리가_중복되었다면_예외가_발생한다() {
-        String name = "액션";
+        String name = "문학";
         Category category1 = new Category(name);
         Category category2 = new Category(name);
         BookCategoriesException exception = assertThrows(
