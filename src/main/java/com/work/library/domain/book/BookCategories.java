@@ -12,6 +12,15 @@ public class BookCategories {
         if (categories == null || categories.isEmpty()) {
             throw BookCategoriesException.blankCategories();
         }
+
+        if (hasDuplicated(categories)) {
+            throw BookCategoriesException.duplicateCategory();
+        }
+
         this.categories = categories;
+    }
+
+    private boolean hasDuplicated(List<Category> categories) {
+        return categories.size() != categories.stream().distinct().count();
     }
 }

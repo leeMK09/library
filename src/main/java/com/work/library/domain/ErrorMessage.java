@@ -9,5 +9,7 @@ public final class ErrorMessage {
 
     public static final String BOOK_CATEGORIES_BLANK = "책의 카테코리는 하나 이상 존재해야 합니다.";
 
+    public static final String DUPLICATED_BOOK_CATEGORIES_BLANK = "하나의 책에 같은 카테고리가 중복되어 존재합니다.";
+
     public static final String CATEGORY_NAME_BLANK = "카테고리 이름은 필수입니다.";
 }

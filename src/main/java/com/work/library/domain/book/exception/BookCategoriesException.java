@@ -10,4 +10,8 @@ public class BookCategoriesException extends RuntimeException {
     public static BookCategoriesException blankCategories() {
         return new BookCategoriesException(ErrorMessage.BOOK_CATEGORIES_BLANK);
     }
+
+    public static BookCategoriesException duplicateCategory() {
+        return new BookCategoriesException(ErrorMessage.DUPLICATED_BOOK_CATEGORIES_BLANK);
+    }
 }
