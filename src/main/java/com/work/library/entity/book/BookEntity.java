@@ -1,6 +1,7 @@
-package com.work.library.entity;
+package com.work.library.entity.book;
 
 import com.work.library.domain.book.BookStatus;
+import com.work.library.entity.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 

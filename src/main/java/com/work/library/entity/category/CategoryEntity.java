@@ -1,5 +1,6 @@
-package com.work.library.entity;
+package com.work.library.entity.category;
 
+import com.work.library.entity.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 
