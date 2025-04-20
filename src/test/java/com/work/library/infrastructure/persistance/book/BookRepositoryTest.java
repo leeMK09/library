@@ -1,16 +1,14 @@
-package com.work.library.infrastructure.persistance;
+package com.work.library.infrastructure.persistance.book;
 
+import com.work.library.annotations.RepositoryTest;
 import com.work.library.domain.book.BookStatus;
 import com.work.library.entity.book.BookEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@ActiveProfiles("test")
+@RepositoryTest
 class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;

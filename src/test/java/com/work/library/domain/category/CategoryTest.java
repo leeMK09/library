@@ -29,7 +29,7 @@ class CategoryTest {
 
     @Test
     void 같은_이름의_카테고리가_존재한다면_둘은_같은_카테고리이다() {
-        String name = "액션";
+        String name = "문학";
         Category category1 = new Category(name);
         Category category2 = new Category(name);
 

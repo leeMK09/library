@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookTest {
     private final BookCategories categoriesFixture = new BookCategories(
-        List.of(new Category("액션"))
+        List.of(new Category("문학"))
     );
 
     @Test
