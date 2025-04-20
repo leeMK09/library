@@ -31,4 +31,20 @@ public class BookEntity extends BaseEntity {
         this.author = author;
         this.title = title;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public BookStatus getStatus() {
+        return status;
+    }
 }
