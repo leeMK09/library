@@ -26,4 +26,12 @@ public class BookCategoryMappingEntity extends BaseEntity {
         this.book = book;
         this.category = category;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
 }
