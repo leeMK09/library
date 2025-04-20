@@ -1,6 +1,6 @@
 package com.work.library.domain.book;
 
-import com.work.library.domain.book.exception.InvalidBookException;
+import com.work.library.domain.book.exception.BookException;
 
 public class Book {
     private final String title;
@@ -9,11 +9,11 @@ public class Book {
 
     public Book(String title, Author author) {
         if (title == null || title.isBlank()) {
-            throw InvalidBookException.blankTitle();
+            throw BookException.blankTitle();
         }
 
         if (author == null) {
-            throw InvalidBookException.emptyAuthor();
+            throw BookException.emptyAuthor();
         }
 
         this.title = title;

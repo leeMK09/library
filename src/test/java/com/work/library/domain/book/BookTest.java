@@ -1,7 +1,7 @@
 package com.work.library.domain.book;
 
 import com.work.library.domain.ErrorMessage;
-import com.work.library.domain.book.exception.InvalidBookException;
+import com.work.library.domain.book.exception.BookException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookTest {
     @Test
     void null_제목으로_Book을_생성하면_예외가_발생한다() {
-        InvalidBookException exception = assertThrows(
-                InvalidBookException.class,
+        BookException exception = assertThrows(
+                BookException.class,
                 () -> new Book(null, new Author("김영한"))
         );
 
@@ -19,8 +19,8 @@ class BookTest {
 
     @Test
     void 빈_제목으로_Book을_생성하면_예외가_발생한다() {
-        InvalidBookException exception = assertThrows(
-                InvalidBookException.class,
+        BookException exception = assertThrows(
+                BookException.class,
                 () -> new Book(" ", new Author("김영한"))
         );
 
@@ -29,8 +29,8 @@ class BookTest {
 
     @Test
     void 빈_저자로_Book을_생성하면_예외가_발생한다() {
-        InvalidBookException exception = assertThrows(
-                InvalidBookException.class,
+        BookException exception = assertThrows(
+                BookException.class,
                 () -> new Book("JPA", null)
         );
 
