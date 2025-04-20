@@ -15,6 +15,12 @@ public class CategoryEntity extends BaseEntity {
     @Comment("카테고리 이름")
     private String name;
 
+    protected CategoryEntity() {}
+
+    public CategoryEntity(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
