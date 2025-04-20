@@ -57,7 +57,7 @@ class BookTest {
     }
 
     @Test
-    void 유효한_지은이_와_제목으로_Book을_생성하면_정상적으로_생성된다() {
+    void 유효한_지은이_제목_카테고리_리스트로_Book을_생성하면_정상적으로_생성된다() {
         String title = "JPA";
         Author author = new Author("김영한");
         Book book = new Book(title, author, categoriesFixture);
@@ -65,5 +65,18 @@ class BookTest {
         assertNotNull(book);
         assertEquals(title, book.getTitle());
         assertEquals(author.value(), book.getAuthor());
+        assertTrue(book.getCategories().size() > 0);
+    }
+
+    @Test
+    void 책은_훼손될_수_있다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        Book book = new Book(title, author, categoriesFixture);
+
+        book.damaged();
+        BookStatus status = book.getStatus();
+
+        assertEquals(BookStatus.DAMAGED, status);
     }
 }

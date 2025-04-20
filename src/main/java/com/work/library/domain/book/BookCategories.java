@@ -20,6 +20,10 @@ public class BookCategories {
         this.categories = categories;
     }
 
+    public int size() {
+        return this.categories.size();
+    }
+
     private boolean hasDuplicated(List<Category> categories) {
         return categories.size() != categories.stream().distinct().count();
     }

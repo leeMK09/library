@@ -9,6 +9,8 @@ public class Book {
 
     private final BookCategories categories;
 
+    private BookStatus status;
+
     public Book(String title, Author author, BookCategories categories) {
         if (title == null || title.isBlank()) {
             throw BookException.blankTitle();
@@ -25,6 +27,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.categories = categories;
+        this.status = BookStatus.AVAILABLE;
     }
 
     public String getTitle() {
@@ -33,5 +36,17 @@ public class Book {
 
     public String getAuthor() {
         return author.value();
+    }
+
+    public BookCategories getCategories() {
+        return categories;
+    }
+
+    public BookStatus getStatus() {
+        return status;
+    }
+
+    public void damaged() {
+        this.status = BookStatus.DAMAGED;
     }
 }
