@@ -30,25 +30,25 @@ public class BookSearchApplication {
     public List<SearchBookListResult> searchByCategoryIdList(List<Long> categoryIdList) {
         List<Category> foundCategories = categoryQueryService.findAllByIdList(categoryIdList);
 
-        if (foundCategories.size() != CollectionUtils.getDistinctCount(categoryIdList)) {
+        if (!CollectionUtils.isEqualsSize(foundCategories, categoryIdList)) {
             log.error(
-                    "요청한 카테고리와 조회된 카테고리의 개수가 다릅니다. requested categories size : {}, found categories size : {}",
+                    "[BookSearchApplication] 요청한 카테고리와 조회된 카테고리의 개수가 다릅니다. requested categories size : {}, found categories size : {}",
                     categoryIdList,
                     foundCategories.size()
             );
-            throw BookApplicationException.invalidParameter();
+            throw BookApplicationException.invalidParameterByCategory();
         }
 
         List<Book> books = bookQueryService.findAllByCategories(foundCategories);
 
-        log.info("==== 카테고리별 도서 조회 성공 ====");
+        log.info("[BookSearchApplication] 카테고리별 도서 조회 성공");
         return SearchBookListResult.from(books);
     }
 
     public List<SearchBookListResult> searchByTileOrAuthor(String title, String author) {
         List<Book> books = bookQueryService.searchByTitleOrAuthor(title, new Author(author));
 
-        log.info("==== 지은이, 책 제목 도서 조회 성공 ====");
+        log.info("[BookSearchApplication] 지은이, 책 제목 기준 도서 조회 성공");
         return SearchBookListResult.from(books);
     }
 }

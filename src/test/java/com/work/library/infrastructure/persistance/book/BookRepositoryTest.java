@@ -7,6 +7,8 @@ import com.work.library.domain.book.BookCategories;
 import com.work.library.domain.book.repository.BookRepository;
 import com.work.library.domain.category.Category;
 import com.work.library.domain.category.repository.CategoryRepository;
+import com.work.library.entity.book.BookCategoryMappingEntity;
+import com.work.library.entity.category.CategoryEntity;
 import com.work.library.infrastructure.persistance.category.CategoryRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BookCategoriesJpaRepository bookCategoriesJpaRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -129,5 +134,35 @@ public class BookRepositoryTest {
         assertEquals(title, foundBookWithoutAuthor.getTitle());
         assertEquals(author.value(), foundBookWithoutTitle.getAuthor());
         assertEquals(author.value(), foundBookWithoutAuthor.getAuthor());
+    }
+
+    @Test
+    void 도서와_카테고리를_변경할_수_있다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        Category oldCategory = new Category("문학");
+        Category newCategory = new Category("IT");
+        Category savedOldCategory = categoryRepository.save(oldCategory);
+        Category savedNewCategory = categoryRepository.save(newCategory);
+        BookCategories bookCategories = new BookCategories(List.of(savedOldCategory));
+        Book book = new Book(title, author, bookCategories);
+        Book savedBook = bookRepository.save(book);
+
+        BookCategories newBookCategories = new BookCategories(List.of(savedNewCategory));
+        bookRepository.remapCategoriesToBook(savedBook, newBookCategories);
+        List<BookCategoryMappingEntity> entities = bookCategoriesJpaRepository.findAllByBook(savedBook.toRegisteredEntity());
+        List<CategoryEntity> categories = entities.stream().map(BookCategoryMappingEntity::getCategory).toList();
+        List<String> result = categories.stream().map(CategoryEntity::getName).toList();
+
+        assertTrue(
+                result.contains(
+                        newCategory.getName()
+                )
+        );
+        assertFalse(
+                result.contains(
+                        oldCategory.getName()
+                )
+        );
     }
 }

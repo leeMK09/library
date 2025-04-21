@@ -1,5 +1,7 @@
 package com.work.library.application.service;
 
+import com.work.library.application.exception.BookApplicationException;
+import com.work.library.application.exception.ErrorType;
 import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
@@ -12,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -61,5 +64,20 @@ class BookQueryServiceTest {
         bookQueryService.searchByTitleOrAuthor(title, author);
 
         verify(bookRepository, times(1)).searchByTitleOrAuthor(title, author);
+    }
+
+    @Test
+    void 존재하지않는_도서를_조회할_경우_예외가_발생한다() {
+        Long bookId = 1L;
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
+            bookQueryService.getById(bookId);
+        });
+        assertEquals(
+                ErrorType.INVALID_PARAMETER,
+                exception.getType()
+        );
     }
 }

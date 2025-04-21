@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,16 @@ public class BookRepositoryImpl implements BookRepository {
     ) {
         this.bookJpaRepository = bookJpaRepository;
         this.bookCategoriesJpaRepository = bookCategoriesJpaRepository;
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        Optional<BookEntity> bookEntity = bookJpaRepository.findById(id);
+        return bookEntity.map(entity -> {
+            List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBook(entity);
+            Book result = toBookListBy(mappingEntities).getFirst();
+            return result;
+        });
     }
 
     @Override
@@ -56,6 +67,14 @@ public class BookRepositoryImpl implements BookRepository {
         List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBooks(bookEntities);
 
         return toBookListBy(mappingEntities);
+    }
+
+    @Override
+    public Book remapCategoriesToBook(Book book, BookCategories newBookCategories) {
+        unlinkCategoriesByBook(book);
+        book.changeCategories(newBookCategories);
+        mappedCategories(book);
+        return book;
     }
 
     private BookCategories mappedCategories(Book book) {
@@ -93,4 +112,9 @@ public class BookRepositoryImpl implements BookRepository {
         }).toList();
     }
 
+    private void unlinkCategoriesByBook(Book book) {
+        BookEntity entity = book.toRegisteredEntity();
+        List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBook(entity);
+        bookCategoriesJpaRepository.deleteAll(mappingEntities);
+    }
 }

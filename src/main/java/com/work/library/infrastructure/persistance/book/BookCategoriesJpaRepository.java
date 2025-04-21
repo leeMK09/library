@@ -29,4 +29,14 @@ public interface BookCategoriesJpaRepository extends JpaRepository<BookCategoryM
     List<BookCategoryMappingEntity> findAllByBooks(
             @Param("books") List<BookEntity> books
     );
+
+    @Query("""
+        SELECT DISTINCT m FROM BookCategoryMappingEntity m
+        JOIN FETCH m.book
+        JOIN FETCH m.category
+        WHERE m.book = :book
+    """)
+    List<BookCategoryMappingEntity> findAllByBook(
+            @Param("book") BookEntity book
+    );
 }

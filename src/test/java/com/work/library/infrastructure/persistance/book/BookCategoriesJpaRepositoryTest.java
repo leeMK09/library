@@ -76,4 +76,25 @@ class BookCategoriesJpaRepositoryTest {
         assertTrue(categoryEntities.contains(savedCategoryEntity));
         assertEquals(categoryName, mappingEntities.get(0).getCategory().getName());
     }
+
+    @Test
+    void 도서_하나의_속한_카테고리_목록을_조회할_수_있다() {
+        String IT = "IT";
+        String 문학 = "문학";
+        BookEntity bookEntity = BookCategoryMappingFixture.getBookEntity();
+        CategoryEntity IT_카테고리 = BookCategoryMappingFixture.createCategoryEntityBy(IT);
+        CategoryEntity 문학_카테고리 = BookCategoryMappingFixture.createCategoryEntityBy(문학);
+        BookEntity savedBookEntity = bookRepository.save(bookEntity);
+        CategoryEntity saved_IT_카테고리 = categoryRepository.save(IT_카테고리);
+        CategoryEntity saved_문학_카테고리 = categoryRepository.save(문학_카테고리);
+        BookCategoryMappingEntity mappedEntity1 = new BookCategoryMappingEntity(savedBookEntity, saved_IT_카테고리);
+        BookCategoryMappingEntity mappedEntity2 = new BookCategoryMappingEntity(savedBookEntity, saved_문학_카테고리);
+        repository.saveAll(List.of(mappedEntity1, mappedEntity2));
+
+        List<BookCategoryMappingEntity> result = repository.findAllByBook(savedBookEntity);
+
+        assertEquals(2, result.size());
+        assertEquals(IT, result.get(0).getCategory().getName());
+        assertEquals(문학, result.get(1).getCategory().getName());
+    }
 }

@@ -1,7 +1,10 @@
 package com.work.library.domain.book;
 
+import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.book.exception.BookException;
 import com.work.library.entity.book.BookEntity;
+
+import java.time.LocalDateTime;
 
 public class Book {
     private Long id;
@@ -74,11 +77,17 @@ public class Book {
         this.status = BookStatus.DAMAGED;
     }
 
-    public void changeCategories(BookCategories newBookCategories) {
+    public BookCategoriesChangedEvent changeCategories(BookCategories newBookCategories) {
         if (newBookCategories == null) {
             throw BookException.emptyCategories();
         }
         this.categories = newBookCategories;
+
+        return new BookCategoriesChangedEvent(
+                this,
+                newBookCategories,
+                LocalDateTime.now()
+        );
     }
 
     public BookEntity toEntity() {
