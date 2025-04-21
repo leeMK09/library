@@ -15,8 +15,7 @@ public class BookCategoryMappingEntity extends BaseEntity {
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
 
-    // * 사용하는 도메인 기준, 매핑 테이블을 통한 카테고리 정보는 필수
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
