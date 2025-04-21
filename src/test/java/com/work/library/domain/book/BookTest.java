@@ -79,4 +79,34 @@ class BookTest {
 
         assertEquals(BookStatus.DAMAGED, status);
     }
+
+    @Test
+    void 책은_카테고리를_변경할_수_있다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        BookCategories bookCategories = new BookCategories(List.of(new Category("예전카테고리")));
+        Book book = new Book(title, author, bookCategories);
+
+        BookCategories newBookCategories = new BookCategories(List.of(new Category("새로운카테고리")));
+        book.changeCategories(newBookCategories);
+        BookCategories changedCategories = book.getCategories();
+
+        assertTrue(
+                changedCategories.getNames().contains("새로운카테고리")
+        );
+        assertFalse(
+                changedCategories.getNames().contains("예전카테고리")
+        );
+    }
+
+    @Test
+    void 변경하려는_카테고리가_없다면_예외가_발생한다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        BookCategories bookCategories = new BookCategories(List.of(new Category("예전카테고리")));
+        Book book = new Book(title, author, bookCategories);
+
+        BookException exception = assertThrows(BookException.class, () -> book.changeCategories(null));
+        assertEquals(ErrorMessage.BOOK_CATEGORIES_BLANK, exception.getMessage());
+    }
 }

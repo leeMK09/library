@@ -10,7 +10,7 @@ public class Book {
 
     private final Author author;
 
-    private final BookCategories categories;
+    private BookCategories categories;
 
     private BookStatus status;
 
@@ -72,6 +72,13 @@ public class Book {
 
     public void damaged() {
         this.status = BookStatus.DAMAGED;
+    }
+
+    public void changeCategories(BookCategories newBookCategories) {
+        if (newBookCategories == null) {
+            throw BookException.emptyCategories();
+        }
+        this.categories = newBookCategories;
     }
 
     public BookEntity toEntity() {
