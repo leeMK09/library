@@ -14,22 +14,40 @@ public class Book {
 
     private BookStatus status;
 
-    public Book(String title, Author author, BookCategories categories) {
-        validateRequired(title, author, categories);
-
-        this.title = title;
-        this.author = author;
-        this.categories = categories;
-        this.status = BookStatus.AVAILABLE;
-    }
-
-    public Book(Long id, String title, Author author, BookCategories categories) {
+    public Book(
+            Long id,
+            String title,
+            Author author,
+            BookStatus status,
+            BookCategories categories
+    ) {
         validateRequired(title, author, categories);
 
         this.id = id;
         this.title = title;
         this.author = author;
+        this.status = status;
         this.categories = categories;
+    }
+
+    public Book(String title, Author author, BookCategories categories) {
+        this(
+                null,
+                title,
+                author,
+                BookStatus.AVAILABLE,
+                categories
+        );
+    }
+
+    public Book(Long id, String title, Author author,  BookCategories categories) {
+        this(
+                id,
+                title,
+                author,
+                BookStatus.AVAILABLE,
+                categories
+        );
     }
 
     public String getTitle() {

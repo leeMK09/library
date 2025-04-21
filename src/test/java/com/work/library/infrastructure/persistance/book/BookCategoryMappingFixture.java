@@ -11,4 +11,8 @@ public class BookCategoryMappingFixture {
     public static CategoryEntity getCategoryEntity() {
         return new CategoryEntity("문학");
     }
+
+    public static CategoryEntity createCategoryEntityBy(String name) {
+        return new CategoryEntity(name);
+    }
 }

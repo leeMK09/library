@@ -3,23 +3,30 @@ package com.work.library.infrastructure.persistance.book;
 import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
-import com.work.library.domain.book.repository.BookCategoriesRepository;
 import com.work.library.domain.book.repository.BookRepository;
+import com.work.library.domain.category.Category;
+import com.work.library.entity.book.BookCategoryMappingEntity;
 import com.work.library.entity.book.BookEntity;
+import com.work.library.entity.category.CategoryEntity;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
     private final BookJpaRepository bookJpaRepository;
 
-    private final BookCategoriesRepository bookCategoriesRepository;
+    private final BookCategoriesJpaRepository bookCategoriesJpaRepository;
 
     public BookRepositoryImpl(
             BookJpaRepository bookJpaRepository,
-            BookCategoriesRepository bookCategoriesRepository
+            BookCategoriesJpaRepository bookCategoriesJpaRepository
     ) {
         this.bookJpaRepository = bookJpaRepository;
-        this.bookCategoriesRepository = bookCategoriesRepository;
+        this.bookCategoriesJpaRepository = bookCategoriesJpaRepository;
     }
 
     @Override
@@ -35,7 +42,41 @@ public class BookRepositoryImpl implements BookRepository {
         return new Book(savedBookEntity.getId(), savedBookEntity.getTitle(), savedAuthor, mappedBookCategories);
     }
 
+    @Override
+    public List<Book> findAllByCategoryList(List<Category> categories) {
+        List<CategoryEntity> categoryEntities = categories.stream().map(Category::toRegisteredEntity).toList();
+        List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findBooksByCategories(categoryEntities);
+        Set<Map.Entry<BookEntity, List<CategoryEntity>>> entries = groupedEntries(mappingEntities);
+
+        return entries.stream().map(entry -> {
+            BookEntity bookEntity = entry.getKey();
+
+            List<Category> categoryList = entry.getValue().stream()
+                    .map(CategoryEntity::toDomain)
+                    .toList();
+            BookCategories bookCategories = new BookCategories(categoryList);
+
+            return bookEntity.toDomain(bookCategories);
+        }).toList();
+    }
+
     private BookCategories mappedCategories(Book book) {
-        return bookCategoriesRepository.save(book, book.getCategories());
+        BookCategories bookCategories = book.getCategories();
+        List<BookCategoryMappingEntity> mappingEntities = bookCategories.toEntity(book.toRegisteredEntity());
+        List<BookCategoryMappingEntity> savedMappingEntities = bookCategoriesJpaRepository.saveAll(mappingEntities);
+        List<Category> categories = savedMappingEntities.stream().map(
+                entity -> entity.getCategory().toDomain()
+        ).toList();
+        return new BookCategories(categories);
+    }
+
+    private Set<Map.Entry<BookEntity, List<CategoryEntity>>> groupedEntries(List<BookCategoryMappingEntity> mappingEntities) {
+        Map<BookEntity, List<CategoryEntity>> result = mappingEntities.stream()
+                .collect(Collectors.groupingBy(
+                        BookCategoryMappingEntity::getBook,
+                        Collectors.mapping(BookCategoryMappingEntity::getCategory, Collectors.toList())
+                ));
+
+        return result.entrySet();
     }
 }

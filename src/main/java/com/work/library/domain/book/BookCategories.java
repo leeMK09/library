@@ -27,6 +27,10 @@ public class BookCategories {
         return this.categories.size();
     }
 
+    public List<String> getNames() {
+        return categories.stream().map(Category::getName).toList();
+    }
+
     public List<BookCategoryMappingEntity> toEntity(BookEntity bookEntity) {
         List<CategoryEntity> categoryEntities = this.categories.stream().map(Category::toRegisteredEntity).toList();
 

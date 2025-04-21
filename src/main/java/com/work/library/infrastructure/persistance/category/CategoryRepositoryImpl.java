@@ -5,6 +5,8 @@ import com.work.library.domain.category.repository.CategoryRepository;
 import com.work.library.entity.category.CategoryEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
     private final CategoryJpaRepository categoryJpaRepository;
@@ -19,5 +21,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         CategoryEntity savedEntity = categoryJpaRepository.save(entity);
 
         return savedEntity.toDomain();
+    }
+
+    @Override
+    public List<Category> findAllByIdList(List<Long> idList) {
+        List<CategoryEntity> result = categoryJpaRepository.findAllByIdIn(idList);
+        return result.stream().map(CategoryEntity::toDomain).toList();
     }
 }

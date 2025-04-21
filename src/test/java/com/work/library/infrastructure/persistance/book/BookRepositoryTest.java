@@ -15,11 +15,10 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RepositoryTest
-@Import({BookRepositoryImpl.class, BookCategoriesRepositoryImpl.class, CategoryRepositoryImpl.class})
+@Import({BookRepositoryImpl.class, CategoryRepositoryImpl.class})
 public class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;
@@ -29,14 +28,14 @@ public class BookRepositoryTest {
 
     private List<Category> savedCategories;
 
+    List<Category> initCategories = List.of(
+            new Category("문학"),
+            new Category("IT"),
+            new Category("인문학")
+    );
+
     @BeforeEach
     void setUp() {
-        List<Category> initCategories = List.of(
-                new Category("문학"),
-                new Category("IT"),
-                new Category("인문학")
-        );
-
         savedCategories = initCategories.stream()
                         .map(categoryRepository::save)
                         .toList();
@@ -55,5 +54,42 @@ public class BookRepositoryTest {
         assertEquals(title, savedBook.getTitle());
         assertEquals(author.value(), savedBook.getAuthor());
         assertEquals(bookCategories.size(), savedBook.getCategories().size());
+    }
+
+    @Test
+    void 카테고리별_도서_목록을_조회할_수_있다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        BookCategories 문학_IT_카테고리 = new BookCategories(
+                List.of(
+                        savedCategories.getFirst(),
+                        savedCategories.get(1)
+                )
+        );
+        BookCategories 인문학_카테고리 = new BookCategories(
+                List.of(
+                        savedCategories.get(2)
+                )
+        );
+        Book book1 = new Book(title, author, 문학_IT_카테고리);
+        Book book2 = new Book(title, author, 인문학_카테고리);
+        Book 문학_IT_카테고리_도서 = bookRepository.save(book1);
+        Book 인문학_카테고리_도서 = bookRepository.save(book2);
+
+        assertTrue(
+                문학_IT_카테고리_도서.getCategories().getNames().contains(
+                        "문학"
+                )
+        );
+        assertTrue(
+                문학_IT_카테고리_도서.getCategories().getNames().contains(
+                        "IT"
+                )
+        );
+        assertTrue(
+                인문학_카테고리_도서.getCategories().getNames().contains(
+                        "인문학"
+                )
+        );
     }
 }

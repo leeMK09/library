@@ -60,6 +60,6 @@ public class BookEntity extends BaseEntity {
 
     public Book toDomain(BookCategories categories) {
         Author authorDomain = new Author(author);
-        return new Book(id, title, authorDomain, categories);
+        return new Book(id, title, authorDomain, status, categories);
     }
 }

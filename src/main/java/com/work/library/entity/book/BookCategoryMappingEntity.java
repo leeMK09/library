@@ -33,4 +33,8 @@ public class BookCategoryMappingEntity extends BaseEntity {
     public CategoryEntity getCategory() {
         return category;
     }
+
+    public BookEntity getBook() {
+        return book;
+    }
 }

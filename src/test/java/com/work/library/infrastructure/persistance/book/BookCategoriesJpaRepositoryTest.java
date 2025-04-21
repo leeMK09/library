@@ -8,6 +8,8 @@ import com.work.library.infrastructure.persistance.category.CategoryJpaRepositor
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @RepositoryTest
@@ -33,5 +35,26 @@ class BookCategoriesJpaRepositoryTest {
         BookCategoryMappingEntity result = repository.findById(savedEntity.getId()).orElseThrow();
 
         assertEquals(savedEntity.getId(), result.getId());
+    }
+
+    @Test
+    void 카테고리별_도서목록을_조회할_수_있다() {
+        String categoryName = "IT";
+        BookEntity bookEntity = BookCategoryMappingFixture.getBookEntity();
+        CategoryEntity categoryEntity = BookCategoryMappingFixture.createCategoryEntityBy(categoryName);
+        BookEntity savedBookEntity = bookRepository.save(bookEntity);
+        CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
+        BookCategoryMappingEntity entity = new BookCategoryMappingEntity(savedBookEntity, savedCategoryEntity);
+        repository.save(entity);
+
+        List<BookCategoryMappingEntity> mappingEntities = repository.findBooksByCategories(List.of(savedCategoryEntity));
+        List<BookEntity> bookEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getBook).toList();
+        List<CategoryEntity> categoryEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getCategory).toList();
+
+        assertTrue(bookEntities.contains(savedBookEntity));
+        assertTrue(categoryEntities.contains(savedCategoryEntity));
+        assertEquals(1, mappingEntities.size());
+        assertEquals(categoryName, mappingEntities.get(0).getCategory().getName());
+        assertEquals(savedBookEntity.getId(), mappingEntities.get(0).getBook().getId());
     }
 }
