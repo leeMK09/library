@@ -3,9 +3,13 @@ package com.work.library.entity.book;
 import com.work.library.entity.BaseEntity;
 import com.work.library.entity.category.CategoryEntity;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "book_category_mappings")
+@SQLDelete(sql = "UPDATE book_category_mappings SET deleted_at = NOW() where id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class BookCategoryMappingEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +19,7 @@ public class BookCategoryMappingEntity extends BaseEntity {
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
 
-    // * 사용하는 도메인 기준, 매핑 테이블을 통한 카테고리 정보는 필수
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
@@ -33,5 +36,9 @@ public class BookCategoryMappingEntity extends BaseEntity {
 
     public CategoryEntity getCategory() {
         return category;
+    }
+
+    public BookEntity getBook() {
+        return book;
     }
 }

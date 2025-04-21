@@ -7,9 +7,13 @@ import com.work.library.domain.book.BookStatus;
 import com.work.library.entity.BaseEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "books")
+@SQLDelete(sql = "UPDATE books SET deleted_at = NOW() where id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class BookEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +64,6 @@ public class BookEntity extends BaseEntity {
 
     public Book toDomain(BookCategories categories) {
         Author authorDomain = new Author(author);
-        return new Book(id, title, authorDomain, categories);
+        return new Book(id, title, authorDomain, status, categories);
     }
 }
