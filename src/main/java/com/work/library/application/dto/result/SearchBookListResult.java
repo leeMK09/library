@@ -1,4 +1,4 @@
-package com.work.library.application.dto;
+package com.work.library.application.dto.result;
 
 import com.work.library.domain.book.Book;
 

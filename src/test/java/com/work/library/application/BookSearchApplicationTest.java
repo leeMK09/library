@@ -1,6 +1,6 @@
 package com.work.library.application;
 
-import com.work.library.application.dto.SearchBookListResult;
+import com.work.library.application.dto.result.SearchBookListResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.application.service.BookQueryService;
@@ -67,5 +67,22 @@ class BookSearchApplicationTest {
         assertEquals(2, result.categories().size());
         assertEquals("문학", result.categories().get(0).name());
         assertEquals("IT", result.categories().get(1).name());
+        verify(bookQueryService, timeout(1)).findAllByCategories(List.of(문학, IT));
+        verify(categoryQueryService, timeout(1)).findAllByIdList(List.of(문학.getId(), IT.getId()));
+    }
+
+    @Test
+    void 지은이_책_제목을_통해_도서를_조회할_수_있다() {
+        String title = "JPA";
+        Author author = new Author("김영한");
+        Category category = new Category("문학");
+        BookCategories bookCategories = new BookCategories(List.of(category));
+        Book book = new Book(title, author, bookCategories);
+
+        when(bookQueryService.searchByTitleOrAuthor(title, author))
+                .thenReturn(List.of(book));
+        bookSearchApplication.searchByTileOrAuthor(title, author.value());
+
+        verify(bookQueryService, timeout(1)).searchByTitleOrAuthor(title, author);
     }
 }
