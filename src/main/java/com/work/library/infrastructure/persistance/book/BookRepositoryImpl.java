@@ -45,19 +45,17 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findAllByCategoryList(List<Category> categories) {
         List<CategoryEntity> categoryEntities = categories.stream().map(Category::toRegisteredEntity).toList();
-        List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findBooksByCategories(categoryEntities);
-        Set<Map.Entry<BookEntity, List<CategoryEntity>>> entries = groupedEntries(mappingEntities);
+        List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByCategories(categoryEntities);
+        return toBookListBy(mappingEntities);
+    }
 
-        return entries.stream().map(entry -> {
-            BookEntity bookEntity = entry.getKey();
+    @Override
+    public List<Book> searchByTitleOrAuthor(String title, Author author) {
+        String searchAuthor = author != null ? author.value() : null;
+        List<BookEntity> bookEntities = bookJpaRepository.searchByTitleOrAuthor(title, searchAuthor);
+        List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBooks(bookEntities);
 
-            List<Category> categoryList = entry.getValue().stream()
-                    .map(CategoryEntity::toDomain)
-                    .toList();
-            BookCategories bookCategories = new BookCategories(categoryList);
-
-            return bookEntity.toDomain(bookCategories);
-        }).toList();
+        return toBookListBy(mappingEntities);
     }
 
     private BookCategories mappedCategories(Book book) {
@@ -79,4 +77,20 @@ public class BookRepositoryImpl implements BookRepository {
 
         return result.entrySet();
     }
+
+    private List<Book> toBookListBy(List<BookCategoryMappingEntity> mappingEntities) {
+        Set<Map.Entry<BookEntity, List<CategoryEntity>>> entries = groupedEntries(mappingEntities);
+
+        return entries.stream().map(entry -> {
+            BookEntity bookEntity = entry.getKey();
+
+            List<Category> categoryList = entry.getValue().stream()
+                    .map(CategoryEntity::toDomain)
+                    .toList();
+            BookCategories bookCategories = new BookCategories(categoryList);
+
+            return bookEntity.toDomain(bookCategories);
+        }).toList();
+    }
+
 }

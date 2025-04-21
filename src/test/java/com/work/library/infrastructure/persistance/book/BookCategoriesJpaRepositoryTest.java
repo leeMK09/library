@@ -47,7 +47,7 @@ class BookCategoriesJpaRepositoryTest {
         BookCategoryMappingEntity entity = new BookCategoryMappingEntity(savedBookEntity, savedCategoryEntity);
         repository.save(entity);
 
-        List<BookCategoryMappingEntity> mappingEntities = repository.findBooksByCategories(List.of(savedCategoryEntity));
+        List<BookCategoryMappingEntity> mappingEntities = repository.findAllByCategories(List.of(savedCategoryEntity));
         List<BookEntity> bookEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getBook).toList();
         List<CategoryEntity> categoryEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getCategory).toList();
 
@@ -56,5 +56,24 @@ class BookCategoriesJpaRepositoryTest {
         assertEquals(1, mappingEntities.size());
         assertEquals(categoryName, mappingEntities.get(0).getCategory().getName());
         assertEquals(savedBookEntity.getId(), mappingEntities.get(0).getBook().getId());
+    }
+
+    @Test
+    void 도서별로_할당된_카테고리_목록을_조회할_수_있다() {
+        String categoryName = "IT";
+        BookEntity bookEntity = BookCategoryMappingFixture.getBookEntity();
+        CategoryEntity categoryEntity = BookCategoryMappingFixture.createCategoryEntityBy(categoryName);
+        BookEntity savedBookEntity = bookRepository.save(bookEntity);
+        CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
+        BookCategoryMappingEntity entity = new BookCategoryMappingEntity(savedBookEntity, savedCategoryEntity);
+        repository.save(entity);
+
+        List<BookCategoryMappingEntity> mappingEntities = repository.findAllByBooks(List.of(savedBookEntity));
+        List<BookEntity> bookEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getBook).toList();
+        List<CategoryEntity> categoryEntities = mappingEntities.stream().map(BookCategoryMappingEntity::getCategory).toList();
+
+        assertTrue(bookEntities.contains(savedBookEntity));
+        assertTrue(categoryEntities.contains(savedCategoryEntity));
+        assertEquals(categoryName, mappingEntities.get(0).getCategory().getName());
     }
 }
