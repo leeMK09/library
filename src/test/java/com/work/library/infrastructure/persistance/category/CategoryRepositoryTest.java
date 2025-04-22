@@ -41,12 +41,28 @@ public class CategoryRepositoryTest {
         CategoryEntity category3 = new CategoryEntity(인문학);
         List<CategoryEntity> savedCategories = categoryJpaRepository.saveAll(List.of(category1, category2, category3));
 
-        List<Category> foundCategories = categoryRepository.findAllByIdList(savedCategories.stream().map(CategoryEntity::getId).toList());
+        List<Category> foundCategories = categoryRepository.findAllByIds(savedCategories.stream().map(CategoryEntity::getId).toList());
         List<String> foundCategoryNames = foundCategories.stream().map(Category::getName).toList();
 
         assertFalse(foundCategories.isEmpty());
         assertTrue(foundCategoryNames.contains("문학"));
         assertTrue(foundCategoryNames.contains("IT"));
         assertTrue(foundCategoryNames.contains("인문학"));
+    }
+
+    @Test
+    void 모든_카테고리를_조회할_수_있다() {
+        CategoryEntity 문학 = new CategoryEntity("문학");
+        CategoryEntity IT = new CategoryEntity("IT");
+        CategoryEntity 인문학 = new CategoryEntity("인문학");
+        categoryJpaRepository.saveAll(List.of(문학, IT, 인문학));
+
+        List<Category> foundCategories = categoryRepository.findAll();
+        List<String> nameList = foundCategories.stream().map(Category::getName).toList();
+
+        assertFalse(foundCategories.isEmpty());
+        assertTrue(nameList.contains(문학.getName()));
+        assertTrue(nameList.contains(IT.getName()));
+        assertTrue(nameList.contains(인문학.getName()));
     }
 }

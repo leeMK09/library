@@ -3,22 +3,19 @@ package com.work.library.application;
 import com.work.library.application.dto.command.ChangeBookCategoriesCommand;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
+import com.work.library.application.service.BookCommandService;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
+import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
-import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.category.Category;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,10 +27,10 @@ class BookCategoriesUpdateApplicationTest {
     private BookQueryService bookQueryService;
 
     @Mock
-    private CategoryQueryService categoryQueryService;
+    private BookCommandService bookCommandService;
 
     @Mock
-    private ApplicationEventPublisher applicationEventPublisher;
+    private CategoryQueryService categoryQueryService;
 
     @InjectMocks
     private BookCategoriesUpdateApplication bookCategoriesUpdateApplication;
@@ -45,7 +42,7 @@ class BookCategoriesUpdateApplicationTest {
                 List.of(1L, 2L)
         );
 
-        when(categoryQueryService.findAllByIdList(commend.newCategoryIdList()))
+        when(categoryQueryService.findAllByIds(commend.newCategoryIdList()))
                 .thenReturn(List.of());
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -66,7 +63,7 @@ class BookCategoriesUpdateApplicationTest {
                 List.of(category1.getId(), category2.getId())
         );
 
-        when(categoryQueryService.findAllByIdList(commend.newCategoryIdList()))
+        when(categoryQueryService.findAllByIds(commend.newCategoryIdList()))
                 .thenReturn(List.of(category1));
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -80,27 +77,22 @@ class BookCategoriesUpdateApplicationTest {
 
     @Test
     void 도서의_카테고리를_변경할_수_있다() {
+        Long bookId = 1L;
         Category category1 = new Category(1L, "문학");
         Category category2 = new Category(2L, "IT");
+        BookCategories bookCategories = new BookCategories(List.of(category1, category2));
         ChangeBookCategoriesCommand commend = new ChangeBookCategoriesCommand(
-                0L,
+                bookId,
                 List.of(category1.getId(), category2.getId())
         );
-        Book book = mock(Book.class);
-        BookCategoriesChangedEvent event = new BookCategoriesChangedEvent(
-                book,
-                new BookCategories(List.of(category1, category2)),
-                LocalDateTime.now()
-        );
+        Book book = new Book(bookId, "JPA", new Author("저자"), bookCategories);
 
         when(bookQueryService.getById(book.getId())).thenReturn(book);
-        when(categoryQueryService.findAllByIdList(List.of(category1.getId(), category2.getId())))
+        when(categoryQueryService.findAllByIds(List.of(category1.getId(), category2.getId())))
                 .thenReturn(List.of(category1, category2));
-
-        when(book.changeCategories(any(BookCategories.class))).thenReturn(event);
 
         bookCategoriesUpdateApplication.changeBookCategories(commend);
 
-        verify(applicationEventPublisher, times(1)).publishEvent(any(BookCategoriesChangedEvent.class));
+        verify(bookCommandService, times(1)).changeBookCategories(any(), any());
     }
 }

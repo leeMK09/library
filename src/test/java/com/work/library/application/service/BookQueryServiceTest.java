@@ -34,7 +34,7 @@ class BookQueryServiceTest {
         List<Category> requestedCategories = List.of(category);
         Book book = new Book("JPA", new Author("김영한"), new BookCategories(requestedCategories));
 
-        when(bookRepository.findAllByCategoryList(requestedCategories))
+        when(bookRepository.findAllByCategories(requestedCategories))
                 .thenReturn(List.of(book));
         List<Book> bookList = bookQueryService.findAllByCategories(requestedCategories);
         Book result = bookList.getFirst();
@@ -47,16 +47,16 @@ class BookQueryServiceTest {
                         "문학"
                 )
         );
-        verify(bookRepository, times(1)).findAllByCategoryList(requestedCategories);
+        verify(bookRepository, times(1)).findAllByCategories(requestedCategories);
     }
 
     @Test
     void 지은이_책_제목을_통해_도서를_조회할_수_있다() {
         String title = "JPA";
-        Author author = new Author("김영한");
+        String author = "김영한";
         Category category = new Category("문학");
         BookCategories bookCategories = new BookCategories(List.of(category));
-        Book book = new Book(title, author, bookCategories);
+        Book book = new Book(title, new Author(author), bookCategories);
 
         when(bookRepository.searchByTitleOrAuthor(title, author))
                 .thenReturn(List.of(book));

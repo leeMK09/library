@@ -101,28 +101,28 @@ public class BookRepositoryTest {
     @Test
     void 지은이와_책_제목으로_도서를_검색할_수_있다() {
         String title = "JPA";
-        Author author = new Author("김영한");
+        String author = "김영한";
         Category category = new Category("문학");
         Category savedCategory = categoryRepository.save(category);
         BookCategories bookCategories = new BookCategories(List.of(savedCategory));
-        Book book = new Book(title, author, bookCategories);
+        Book book = new Book(title, new Author(author), bookCategories);
         bookRepository.save(book);
 
-        List<Book> foundBookList = bookRepository.searchByTitleOrAuthor(title, author);
-        Book result = foundBookList.getFirst();
+        List<Book> foundBooks = bookRepository.searchByTitleOrAuthor(title, author);
+        Book result = foundBooks.getFirst();
 
         assertEquals(title, result.getTitle());
-        assertEquals(author.value(), result.getAuthor());
+        assertEquals(author, result.getAuthor());
     }
 
     @Test
     void 지은이_혹은_책_제목_중_하나가_없더라도_일치하는_도서를_검색할_수_있다() {
         String title = "JPA";
-        Author author = new Author("김영한");
+        String author = "김영한";
         Category category = new Category("문학");
         Category savedCategory = categoryRepository.save(category);
         BookCategories bookCategories = new BookCategories(List.of(savedCategory));
-        Book book = new Book(title, author, bookCategories);
+        Book book = new Book(title, new Author(author), bookCategories);
         bookRepository.save(book);
 
         List<Book> foundBookListWithoutAuthor = bookRepository.searchByTitleOrAuthor(title, null);
@@ -132,8 +132,8 @@ public class BookRepositoryTest {
 
         assertEquals(title, foundBookWithoutTitle.getTitle());
         assertEquals(title, foundBookWithoutAuthor.getTitle());
-        assertEquals(author.value(), foundBookWithoutTitle.getAuthor());
-        assertEquals(author.value(), foundBookWithoutAuthor.getAuthor());
+        assertEquals(author, foundBookWithoutTitle.getAuthor());
+        assertEquals(author, foundBookWithoutAuthor.getAuthor());
     }
 
     @Test

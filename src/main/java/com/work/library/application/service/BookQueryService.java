@@ -1,7 +1,6 @@
 package com.work.library.application.service;
 
 import com.work.library.application.exception.BookApplicationException;
-import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.repository.BookRepository;
 import com.work.library.domain.category.Category;
@@ -21,11 +20,11 @@ public class BookQueryService {
     }
 
     public List<Book> findAllByCategories(List<Category> categories) {
-        List<Book> result = bookRepository.findAllByCategoryList(categories);
+        List<Book> result = bookRepository.findAllByCategories(categories);
         return result;
     }
 
-    public List<Book> searchByTitleOrAuthor(String title, Author author) {
+    public List<Book> searchByTitleOrAuthor(String title, String author) {
         List<Book> result = bookRepository.searchByTitleOrAuthor(title, author);
         return result;
     }

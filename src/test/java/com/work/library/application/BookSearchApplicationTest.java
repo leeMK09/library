@@ -1,6 +1,6 @@
 package com.work.library.application;
 
-import com.work.library.application.dto.result.SearchBookListResult;
+import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.application.service.BookQueryService;
@@ -37,11 +37,11 @@ class BookSearchApplicationTest {
         List<Long> categoryIdList = List.of(1L, 2L);
         List<Category> foundCategories = List.of(new Category("문학"));
 
-        when(categoryQueryService.findAllByIdList(categoryIdList))
+        when(categoryQueryService.findAllByIds(categoryIdList))
                 .thenReturn(foundCategories);
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
-            bookSearchApplication.searchByCategoryIdList(categoryIdList);
+            bookSearchApplication.searchByCategoryIds(categoryIdList);
         });
         assertEquals(ErrorType.INVALID_PARAMETER, exception.getType());
     }
@@ -54,34 +54,34 @@ class BookSearchApplicationTest {
         Category IT = new Category(2L, "IT");
         Book book = new Book(title, new Author(author), new BookCategories(List.of(문학, IT)));
 
-        when(categoryQueryService.findAllByIdList(List.of(문학.getId(), IT.getId())))
+        when(categoryQueryService.findAllByIds(List.of(문학.getId(), IT.getId())))
                 .thenReturn(List.of(문학, IT));
         when(bookQueryService.findAllByCategories(List.of(문학, IT)))
                 .thenReturn(List.of(book));
-        List<SearchBookListResult> searchBookListResult = bookSearchApplication.searchByCategoryIdList(List.of(문학.getId(), IT.getId()));
-        SearchBookListResult result = searchBookListResult.getFirst();
+        List<BookResult> searchBookResults = bookSearchApplication.searchByCategoryIds(List.of(문학.getId(), IT.getId()));
+        BookResult result = searchBookResults.getFirst();
 
-        assertEquals(1, searchBookListResult.size());
+        assertEquals(1, searchBookResults.size());
         assertEquals(title, result.title());
         assertEquals(author, result.author());
         assertEquals(2, result.categories().size());
         assertEquals("문학", result.categories().get(0).name());
         assertEquals("IT", result.categories().get(1).name());
         verify(bookQueryService, timeout(1)).findAllByCategories(List.of(문학, IT));
-        verify(categoryQueryService, timeout(1)).findAllByIdList(List.of(문학.getId(), IT.getId()));
+        verify(categoryQueryService, timeout(1)).findAllByIds(List.of(문학.getId(), IT.getId()));
     }
 
     @Test
     void 지은이_책_제목을_통해_도서를_조회할_수_있다() {
         String title = "JPA";
-        Author author = new Author("김영한");
+        String author = "김영한";
         Category category = new Category("문학");
         BookCategories bookCategories = new BookCategories(List.of(category));
-        Book book = new Book(title, author, bookCategories);
+        Book book = new Book(title, new Author(author), bookCategories);
 
         when(bookQueryService.searchByTitleOrAuthor(title, author))
                 .thenReturn(List.of(book));
-        bookSearchApplication.searchByTileOrAuthor(title, author.value());
+        bookSearchApplication.searchByTileOrAuthor(title, author);
 
         verify(bookQueryService, timeout(1)).searchByTitleOrAuthor(title, author);
     }

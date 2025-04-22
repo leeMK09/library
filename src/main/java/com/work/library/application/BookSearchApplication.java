@@ -1,10 +1,9 @@
 package com.work.library.application;
 
-import com.work.library.application.dto.result.SearchBookListResult;
+import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
-import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.category.Category;
 import com.work.library.utils.CollectionUtils;
@@ -27,13 +26,13 @@ public class BookSearchApplication {
         this.categoryQueryService = categoryQueryService;
     }
 
-    public List<SearchBookListResult> searchByCategoryIdList(List<Long> categoryIdList) {
-        List<Category> foundCategories = categoryQueryService.findAllByIdList(categoryIdList);
+    public List<BookResult> searchByCategoryIds(List<Long> categoryIds) {
+        List<Category> foundCategories = categoryQueryService.findAllByIds(categoryIds);
 
-        if (!CollectionUtils.isEqualsSize(foundCategories, categoryIdList)) {
+        if (!CollectionUtils.isEqualsSize(foundCategories, categoryIds)) {
             log.error(
                     "[BookSearchApplication] 요청한 카테고리와 조회된 카테고리의 개수가 다릅니다. requested categories size : {}, found categories size : {}",
-                    categoryIdList,
+                    categoryIds,
                     foundCategories.size()
             );
             throw BookApplicationException.invalidParameterByCategory();
@@ -42,13 +41,13 @@ public class BookSearchApplication {
         List<Book> books = bookQueryService.findAllByCategories(foundCategories);
 
         log.info("[BookSearchApplication] 카테고리별 도서 조회 성공");
-        return SearchBookListResult.from(books);
+        return BookResult.listFrom(books);
     }
 
-    public List<SearchBookListResult> searchByTileOrAuthor(String title, String author) {
-        List<Book> books = bookQueryService.searchByTitleOrAuthor(title, new Author(author));
+    public List<BookResult> searchByTileOrAuthor(String title, String author) {
+        List<Book> books = bookQueryService.searchByTitleOrAuthor(title, author);
 
         log.info("[BookSearchApplication] 지은이, 책 제목 기준 도서 조회 성공");
-        return SearchBookListResult.from(books);
+        return BookResult.listFrom(books);
     }
 }

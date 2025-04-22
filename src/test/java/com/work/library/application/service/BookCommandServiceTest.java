@@ -3,6 +3,7 @@ package com.work.library.application.service;
 import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
+import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.book.repository.BookRepository;
 import com.work.library.domain.category.Category;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ class BookCommandServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private BookCommandService bookCommandService;
@@ -36,5 +41,18 @@ class BookCommandServiceTest {
         bookCommandService.save(book);
 
         verify(bookRepository, times(1)).save(book);
+    }
+
+    @Test
+    void 도서의_카테고리를_변경할_수_있다() {
+        Book book = mock(Book.class);
+        BookCategories bookCategories = mock(BookCategories.class);
+        BookCategoriesChangedEvent event = mock(BookCategoriesChangedEvent.class);
+
+        when(book.changeCategories(bookCategories)).thenReturn(event);
+
+        bookCommandService.changeBookCategories(book, bookCategories);
+
+        verify(applicationEventPublisher, times(1)).publishEvent(event);
     }
 }

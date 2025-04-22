@@ -24,8 +24,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public List<Category> findAllByIdList(List<Long> idList) {
+    public List<Category> findAllByIds(List<Long> idList) {
         List<CategoryEntity> result = categoryJpaRepository.findAllByIdIn(idList);
         return result.stream().map(CategoryEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<Category> findAll() {
+        List<CategoryEntity> entities = categoryJpaRepository.findAll();
+        return entities.stream().map(CategoryEntity::toDomain).toList();
     }
 }
