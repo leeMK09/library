@@ -8,15 +8,16 @@
 .자세히 보기
 ====
 
+요청 예시
 include::{snippets}/book-search-by-categories-success/http-request.adoc[]
 
 요청 파라미터
 include::{snippets}/book-search-by-categories-success/query-parameters.adoc[]
 
-예시
+응답 예시
 include::{snippets}/book-search-by-categories-success/http-response.adoc[]
 
-요청 필드
+응답 필드
 include::{snippets}/book-search-by-categories-success/response-fields.adoc[]
 
 ====
@@ -27,12 +28,13 @@ include::{snippets}/book-search-by-categories-success/response-fields.adoc[]
 .자세히 보기
 ====
 
+요청 예시
 include::{snippets}/book-search-by-categories-failed/http-request.adoc[]
 
-예시
+응답 예시
 include::{snippets}/book-search-by-categories-failed/http-response.adoc[]
 
-요청 필드
+응답 필드
 include::{snippets}/book-search-by-categories-failed/response-fields.adoc[]
 
 ====
@@ -46,15 +48,103 @@ include::{snippets}/book-search-by-categories-failed/response-fields.adoc[]
 .자세히 보기
 ====
 
+요청 예시
 include::{snippets}/book-search-by-title-or-author/http-request.adoc[]
 
 요청 파라미터
 include::{snippets}/book-search-by-title-or-author/query-parameters.adoc[]
 
-예시
+응답 예시
 include::{snippets}/book-search-by-title-or-author/http-response.adoc[]
 
-요청 필드
+응답 필드
 include::{snippets}/book-search-by-title-or-author/response-fields.adoc[]
+
+====
+
+== 도서 등록 API
+저자, 책 제목, 카테고리 와 함께 도서를 등록할 수 있습니다.
+
+=== 성공
+
+[%collapsible]
+.자세히 보기
+====
+
+요청 예시
+include::{snippets}/book-save-success/http-request.adoc[]
+
+요청 바디
+include::{snippets}/book-save-success/request-body.adoc[]
+
+응답 예시
+include::{snippets}/book-save-success/http-response.adoc[]
+
+응답 필드
+include::{snippets}/book-save-success/response-fields.adoc[]
+
+====
+=== 실패 (책 제목이 없는경우)
+
+[%collapsible]
+.자세히 보기
+====
+
+요청 예시
+include::{snippets}/book-save-failed-by-empty-title/http-request.adoc[]
+
+응답 예시
+include::{snippets}/book-save-failed-by-empty-title/http-response.adoc[]
+
+응답 필드
+include::{snippets}/book-save-failed-by-empty-title/response-fields.adoc[]
+
+====
+=== 실패 (책 저자가 없는경우)
+
+[%collapsible]
+.자세히 보기
+====
+
+요청 예시
+include::{snippets}/book-save-failed-by-empty-author/http-request.adoc[]
+
+응답 예시
+include::{snippets}/book-save-failed-by-empty-author/http-response.adoc[]
+
+응답 필드
+include::{snippets}/book-save-failed-by-empty-author/response-fields.adoc[]
+
+====
+=== 실패 (카테고리가 없는 경우)
+
+[%collapsible]
+.자세히 보기
+====
+
+요청 예시
+include::{snippets}/book-save-failed-by-null-categories/http-request.adoc[]
+
+응답 예시
+include::{snippets}/book-save-failed-by-null-categories/http-response.adoc[]
+
+응답 필드
+include::{snippets}/book-save-failed-by-null-categories/response-fields.adoc[]
+
+====
+=== 실패 (카테고리가 비어있는 경우)
+
+[%collapsible]
+.자세히 보기
+====
+
+요청 예시
+include::{snippets}/book-save-failed-by-empty-categories/http-request.adoc[]
+
+응답 예시
+include::{snippets}/book-save-failed-by-empty-categories/http-response.adoc[]
+
+응답 필드
+include::{snippets}/book-save-failed-by-empty-categories/response-fields.adoc[]
 
 ====
