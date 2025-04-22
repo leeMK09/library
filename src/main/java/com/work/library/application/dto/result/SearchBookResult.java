@@ -2,7 +2,6 @@ package com.work.library.application.dto.result;
 
 import com.work.library.domain.book.Book;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -17,13 +16,13 @@ public record SearchBookResult(
         Long id,
         String title,
         String author,
-        List<CategoryResult> categories
+        List<SearchCategoryResult> categories
 ) {
     public static List<SearchBookResult> listFrom(List<Book> books) {
         List<SearchBookResult> result = books.stream()
                 .map(book -> {
                     List<String> categoryNames = book.getCategories().getNames();
-                    List<CategoryResult> categoryResult = categoryNames.stream().map(CategoryResult::new).toList();
+                    List<SearchCategoryResult> categoryResult = categoryNames.stream().map(SearchCategoryResult::new).toList();
 
                     return new SearchBookResult(
                             book.getId(),

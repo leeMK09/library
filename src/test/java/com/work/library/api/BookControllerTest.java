@@ -1,15 +1,13 @@
 package com.work.library.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.work.library.api.base.ResponseMessage;
 import com.work.library.api.base.ResponseType;
 import com.work.library.api.request.RegisterBookRequest;
-import com.work.library.api.response.RegisteredBookResponse;
 import com.work.library.application.BookRegisterApplication;
 import com.work.library.application.BookSearchApplication;
 import com.work.library.application.dto.command.RegisterBookCommand;
-import com.work.library.application.dto.result.CategoryResult;
+import com.work.library.application.dto.result.SearchCategoryResult;
 import com.work.library.application.dto.result.SearchBookResult;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.config.GlobalExceptionHandler;
@@ -57,7 +55,7 @@ class BookControllerTest {
         @Test
         void 카테고리_ID_목록으로_도서_조회요청_성공시_200_응답을_반환한다() throws Exception {
             List<SearchBookResult> mockResults = List.of(
-                    new SearchBookResult(1L, "JPA", "김영한", List.of(new CategoryResult("IT")))
+                    new SearchBookResult(1L, "JPA", "김영한", List.of(new SearchCategoryResult("IT")))
             );
 
             when(bookSearchApplication.searchByCategoryIdList(List.of(1L, 2L)))
@@ -113,7 +111,7 @@ class BookControllerTest {
         @Test
         void 지은이와_제목으로_도서_조회요청_성공시_200_응답을_한다() throws Exception {
             List<SearchBookResult> mockResults = List.of(
-                    new SearchBookResult(1L, "JPA", "김영한", List.of(new CategoryResult("IT")))
+                    new SearchBookResult(1L, "JPA", "김영한", List.of(new SearchCategoryResult("IT")))
             );
 
             when(bookSearchApplication.searchByTileOrAuthor("JPA", "김영한"))

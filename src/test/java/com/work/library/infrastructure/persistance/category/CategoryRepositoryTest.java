@@ -52,10 +52,17 @@ public class CategoryRepositoryTest {
 
     @Test
     void 모든_카테고리를_조회할_수_있다() {
-        // given
+        CategoryEntity 문학 = new CategoryEntity("문학");
+        CategoryEntity IT = new CategoryEntity("IT");
+        CategoryEntity 인문학 = new CategoryEntity("인문학");
+        categoryJpaRepository.saveAll(List.of(문학, IT, 인문학));
 
-        // when
+        List<Category> foundCategories = categoryRepository.findAll();
+        List<String> nameList = foundCategories.stream().map(Category::getName).toList();
 
-        // then
+        assertFalse(foundCategories.isEmpty());
+        assertTrue(nameList.contains(문학.getName()));
+        assertTrue(nameList.contains(IT.getName()));
+        assertTrue(nameList.contains(인문학.getName()));
     }
 }
