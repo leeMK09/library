@@ -17,4 +17,6 @@ public interface BookRepository {
     List<Book> searchByTitleOrAuthor(String title, String author);
 
     Book remapCategoriesToBook(Book book, BookCategories newBookCategories);
+
+    Optional<Book> searchByTitleAndAuthor(String title, String author);
 }

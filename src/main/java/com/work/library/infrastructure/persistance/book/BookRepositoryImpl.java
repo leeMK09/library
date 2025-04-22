@@ -73,6 +73,16 @@ public class BookRepositoryImpl implements BookRepository {
         return book;
     }
 
+    @Override
+    public Optional<Book> searchByTitleAndAuthor(String title, String author) {
+        Optional<BookEntity> bookEntity = bookJpaRepository.searchByTitleAndAuthor(title, author);
+        return bookEntity.map(entity -> {
+            List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBook(entity);
+            Book result = toBookListBy(mappingEntities).getFirst();
+            return result;
+        });
+    }
+
     private BookCategories mappedCategories(Book book) {
         BookCategories bookCategories = book.getCategories();
         List<BookCategoryMappingEntity> mappingEntities = bookCategories.toEntity(book.toRegisteredEntity());

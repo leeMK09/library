@@ -4,7 +4,11 @@ import com.work.library.application.dto.command.RegisterBookCommand;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.application.service.BookCommandService;
+import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
+import com.work.library.domain.book.Author;
+import com.work.library.domain.book.Book;
+import com.work.library.domain.book.BookCategories;
 import com.work.library.domain.category.Category;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +17,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookRegisterApplicationTest {
+    @Mock
+    private BookQueryService bookQueryService;
+
     @Mock
     private BookCommandService bookCommandService;
 
@@ -66,6 +74,37 @@ class BookRegisterApplicationTest {
         });
         assertEquals(
                 ErrorType.INVALID_PARAMETER,
+                exception.getType()
+        );
+    }
+
+    @Test
+    void 요청한_지은이_와_제목으로_등록된_책이_이미_있다면_예외가_발생한다() {
+        String title = "JPA";
+        String author = "김영한";
+        Category category = new Category(2L, "IT");
+        RegisterBookCommand command = new RegisterBookCommand(
+                title,
+                author,
+                List.of(category.getId())
+        );
+        Book book = new Book(
+                1L,
+                title,
+                new Author(author),
+                new BookCategories(List.of(category))
+        );
+
+        when(categoryQueryService.findAllByIds(command.categoryIdList()))
+                .thenReturn(List.of(category));
+        when(bookQueryService.searchByTitleAndAuthor(title, author))
+                .thenReturn(Optional.of(book));
+
+        BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
+            bookRegisterApplication.save(command);
+        });
+        assertEquals(
+                ErrorType.RESOURCE_DUPLICATED,
                 exception.getType()
         );
     }

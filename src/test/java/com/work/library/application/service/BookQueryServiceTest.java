@@ -80,4 +80,20 @@ class BookQueryServiceTest {
                 exception.getType()
         );
     }
+
+    @Test
+    void 지은이와_제목을_통해_도서를_조회할_수_있다() {
+        String title = "JPA";
+        String author = "김영한";
+        Category category = new Category("문학");
+        BookCategories bookCategories = new BookCategories(List.of(category));
+        Book book = new Book(title, new Author(author), bookCategories);
+
+        when(bookRepository.searchByTitleAndAuthor(title, author))
+                .thenReturn(Optional.of(book));
+
+        bookQueryService.searchByTitleAndAuthor(title, author);
+
+        verify(bookRepository, times(1)).searchByTitleAndAuthor(title, author);
+    }
 }

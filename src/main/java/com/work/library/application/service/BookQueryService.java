@@ -29,6 +29,11 @@ public class BookQueryService {
         return result;
     }
 
+    public Optional<Book> searchByTitleAndAuthor(String title, String author) {
+        Optional<Book> book = bookRepository.searchByTitleAndAuthor(title, author);
+        return book;
+    }
+
     public Book getById(Long id) {
         Optional<Book> book = bookRepository.findById(id);
 

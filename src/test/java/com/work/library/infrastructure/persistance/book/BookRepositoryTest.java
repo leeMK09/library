@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -164,5 +165,21 @@ public class BookRepositoryTest {
                         oldCategory.getName()
                 )
         );
+    }
+
+    @Test
+    void 지은이와_제목에_일치하는_도서를_조회할_수_있다() {
+        String title = "JPA";
+        String author = "김영한";
+        Category category = new Category("IT");
+        Category savedCategory = categoryRepository.save(category);
+        BookCategories bookCategories = new BookCategories(List.of(savedCategory));
+        Book book = new Book(title, new Author(author), bookCategories);
+        bookRepository.save(book);
+
+        Book foundBook = bookRepository.searchByTitleAndAuthor(title, author).orElseThrow();
+
+        assertEquals(title, foundBook.getTitle());
+        assertEquals(author, foundBook.getAuthor());
     }
 }
