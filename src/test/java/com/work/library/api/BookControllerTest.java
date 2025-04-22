@@ -14,6 +14,7 @@ import com.work.library.application.dto.result.CategoryResult;
 import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.config.GlobalExceptionHandler;
+import com.work.library.domain.book.BookStatus;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ class BookControllerTest {
         @Test
         void 카테고리_ID_목록으로_도서_조회요청_성공시_200_응답을_반환한다() throws Exception {
             List<BookResult> mockResults = List.of(
-                    new BookResult(1L, "JPA", "김영한", List.of(new CategoryResult("IT")))
+                    new BookResult(1L, "JPA", "김영한", BookStatus.AVAILABLE.name(), List.of(new CategoryResult("IT")))
             );
 
             when(bookSearchApplication.searchByCategoryIds(List.of(1L, 2L)))
@@ -88,6 +89,7 @@ class BookControllerTest {
                             fieldWithPath("data.list[].id").type(NUMBER).description("도서 ID"),
                             fieldWithPath("data.list[].title").type(STRING).description("도서 제목"),
                             fieldWithPath("data.list[].author").type(STRING).description("도서 저자"),
+                            fieldWithPath("data.list[].status").type(STRING).description("도서 상태"),
                             fieldWithPath("data.list[].categories").type(ARRAY).description("도서의 카테고리 목록"),
                             fieldWithPath("data.list[].categories[].name").type(STRING).description("카테고리 이름")
                     )
@@ -117,7 +119,7 @@ class BookControllerTest {
         @Test
         void 지은이와_제목으로_도서_조회요청_성공시_200_응답을_한다() throws Exception {
             List<BookResult> mockResults = List.of(
-                    new BookResult(1L, "JPA", "김영한", List.of(new CategoryResult("IT")))
+                    new BookResult(1L, "JPA", "김영한", BookStatus.AVAILABLE.name(), List.of(new CategoryResult("IT")))
             );
 
             when(bookSearchApplication.searchByTileOrAuthor("JPA", "김영한"))
@@ -146,6 +148,7 @@ class BookControllerTest {
                                     fieldWithPath("data.list[].id").type(NUMBER).description("도서 ID"),
                                     fieldWithPath("data.list[].title").type(STRING).description("도서 제목"),
                                     fieldWithPath("data.list[].author").type(STRING).description("도서 저자"),
+                                    fieldWithPath("data.list[].status").type(STRING).description("도서 상태"),
                                     fieldWithPath("data.list[].categories").type(ARRAY).description("도서의 카테고리 목록"),
                                     fieldWithPath("data.list[].categories[].name").type(STRING).description("카테고리 이름")
                             )
@@ -290,7 +293,7 @@ class BookControllerTest {
                         new CategoryResult("문학"),
                         new CategoryResult("IT")
                 );
-                BookResult mockResult = new BookResult(1L, "JPA", "김영한", categoryResults);
+                BookResult mockResult = new BookResult(1L, "JPA", "김영한", BookStatus.AVAILABLE.name(), categoryResults);
 
                 when(bookCategoriesUpdateApplication.changeBookCategories(command))
                         .thenReturn(mockResult);
