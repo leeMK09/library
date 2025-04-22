@@ -8,6 +8,7 @@ import com.work.library.api.request.RegisterBookRequest;
 import com.work.library.application.BookCategoriesUpdateApplication;
 import com.work.library.application.BookRegisterApplication;
 import com.work.library.application.BookSearchApplication;
+import com.work.library.application.BookUpdateApplication;
 import com.work.library.application.dto.command.ChangeBookCategoriesCommand;
 import com.work.library.application.dto.command.RegisterBookCommand;
 import com.work.library.application.dto.result.CategoryResult;
@@ -53,6 +54,9 @@ class BookControllerTest {
 
     @MockitoBean
     private BookRegisterApplication bookRegisterApplication;
+
+    @MockitoBean
+    private BookUpdateApplication bookUpdateApplication;
 
     @MockitoBean
     private BookCategoriesUpdateApplication bookCategoriesUpdateApplication;
@@ -369,6 +373,35 @@ class BookControllerTest {
                                         fieldWithPath("type").type(STRING).description("응답 타입"),
                                         fieldWithPath("message").type(STRING).description("응답 메시지"),
                                         fieldWithPath("data").type(NULL).description("응답 데이터")
+                                )
+                        ));
+            }
+
+            @Test
+            void 도서_훼손에_성공하면_200_을답을_반환한다() throws Exception {
+                Long bookId = 1L;
+
+                when(bookUpdateApplication.damage(bookId))
+                        .thenReturn(bookId);
+
+                mockMvc.perform(
+                                patch("/v1/books/{bookId}/damage", 1L)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                        )
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.type").value(ResponseType.SUCCESS.name()))
+                        .andExpect(jsonPath("$.message").value(ResponseMessage.BookResponseMessage.SUCCESS_BOOK_CHANGE))
+                        .andExpect(jsonPath("$.data.id").value(1L))
+                        .andDo(document("book-damaged-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("bookId").description("훼손할 도서 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("type").type(STRING).description("응답 타입"),
+                                        fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                        fieldWithPath("data.id").type(NUMBER).description("도서 ID")
                                 )
                         ));
             }
