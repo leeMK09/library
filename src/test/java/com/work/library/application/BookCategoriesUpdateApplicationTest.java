@@ -3,6 +3,7 @@ package com.work.library.application;
 import com.work.library.application.dto.command.ChangeBookCategoriesCommand;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
+import com.work.library.application.service.BookCommandService;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
 import com.work.library.domain.book.Book;
@@ -30,10 +31,10 @@ class BookCategoriesUpdateApplicationTest {
     private BookQueryService bookQueryService;
 
     @Mock
-    private CategoryQueryService categoryQueryService;
+    private BookCommandService bookCommandService;
 
     @Mock
-    private ApplicationEventPublisher applicationEventPublisher;
+    private CategoryQueryService categoryQueryService;
 
     @InjectMocks
     private BookCategoriesUpdateApplication bookCategoriesUpdateApplication;
@@ -87,20 +88,13 @@ class BookCategoriesUpdateApplicationTest {
                 List.of(category1.getId(), category2.getId())
         );
         Book book = mock(Book.class);
-        BookCategoriesChangedEvent event = new BookCategoriesChangedEvent(
-                book,
-                new BookCategories(List.of(category1, category2)),
-                LocalDateTime.now()
-        );
 
         when(bookQueryService.getById(book.getId())).thenReturn(book);
         when(categoryQueryService.findAllByIdList(List.of(category1.getId(), category2.getId())))
                 .thenReturn(List.of(category1, category2));
 
-        when(book.changeCategories(any(BookCategories.class))).thenReturn(event);
-
         bookCategoriesUpdateApplication.changeBookCategories(commend);
 
-        verify(applicationEventPublisher, times(1)).publishEvent(any(BookCategoriesChangedEvent.class));
+        verify(bookCommandService, times(1)).changeBookCategories(any(), any());
     }
 }

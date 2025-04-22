@@ -8,7 +8,7 @@ import com.work.library.domain.category.Category;
 import java.util.List;
 
 /**
- * 도서 등록을 위한 커맨드 객체.
+ * 도서 등록을 위한 커맨드 객체
  *
  * @param title           도서 제목
  * @param author          도서 저자 이름

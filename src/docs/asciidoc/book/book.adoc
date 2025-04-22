@@ -1,0 +1,14 @@
+[[book-search-api]]
+== 도서 검색 API
+카테고리 별 도서를 조회합니다.
+
+include::{snippets}/book-search-by-categories/http-request.adoc[]
+
+요청 파라미터
+include::{snippets}/book-search-by-categories/query-parameters.adoc[]
+
+예시
+include::{snippets}/book-search-by-categories/http-response.adoc[]
+
+요청필드
+include::{snippets}/book-search-by-categories/response-fields.adoc[]

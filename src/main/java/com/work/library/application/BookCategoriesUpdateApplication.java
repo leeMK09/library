@@ -2,6 +2,7 @@ package com.work.library.application;
 
 import com.work.library.application.dto.command.ChangeBookCategoriesCommand;
 import com.work.library.application.exception.BookApplicationException;
+import com.work.library.application.service.BookCommandService;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
 import com.work.library.domain.book.Book;
@@ -21,21 +22,20 @@ import java.util.List;
 public class BookCategoriesUpdateApplication {
     private final BookQueryService bookQueryService;
 
-    private final CategoryQueryService categoryQueryService;
+    private final BookCommandService bookCommandService;
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final CategoryQueryService categoryQueryService;
 
     public BookCategoriesUpdateApplication(
             BookQueryService bookQueryService,
-            CategoryQueryService categoryQueryService,
-            ApplicationEventPublisher eventPublisher
+            BookCommandService bookCommandService,
+            CategoryQueryService categoryQueryService
     ) {
         this.bookQueryService = bookQueryService;
+        this.bookCommandService = bookCommandService;
         this.categoryQueryService = categoryQueryService;
-        this.eventPublisher = eventPublisher;
     }
 
-    @Transactional
     public void changeBookCategories(ChangeBookCategoriesCommand command) {
         Book book = bookQueryService.getById(command.bookId());
         List<Category> newCategories = categoryQueryService.findAllByIdList(command.newCategoryIdList());
@@ -49,7 +49,6 @@ public class BookCategoriesUpdateApplication {
             throw BookApplicationException.invalidParameterByCategory();
         }
         BookCategories newBookCategories = new BookCategories(newCategories);
-        BookCategoriesChangedEvent event = book.changeCategories(newBookCategories);
-        eventPublisher.publishEvent(event);
+        bookCommandService.changeBookCategories(book, newBookCategories);
     }
 }
