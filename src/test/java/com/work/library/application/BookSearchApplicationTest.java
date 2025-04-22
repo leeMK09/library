@@ -74,14 +74,14 @@ class BookSearchApplicationTest {
     @Test
     void 지은이_책_제목을_통해_도서를_조회할_수_있다() {
         String title = "JPA";
-        Author author = new Author("김영한");
+        String author = "김영한";
         Category category = new Category("문학");
         BookCategories bookCategories = new BookCategories(List.of(category));
-        Book book = new Book(title, author, bookCategories);
+        Book book = new Book(title, new Author(author), bookCategories);
 
         when(bookQueryService.searchByTitleOrAuthor(title, author))
                 .thenReturn(List.of(book));
-        bookSearchApplication.searchByTileOrAuthor(title, author.value());
+        bookSearchApplication.searchByTileOrAuthor(title, author);
 
         verify(bookQueryService, timeout(1)).searchByTitleOrAuthor(title, author);
     }

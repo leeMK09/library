@@ -46,7 +46,7 @@ public class BookSearchApplication {
     }
 
     public List<SearchBookResult> searchByTileOrAuthor(String title, String author) {
-        List<Book> books = bookQueryService.searchByTitleOrAuthor(title, new Author(author));
+        List<Book> books = bookQueryService.searchByTitleOrAuthor(title, author);
 
         log.info("[BookSearchApplication] 지은이, 책 제목 기준 도서 조회 성공");
         return SearchBookResult.listFrom(books);

@@ -10,10 +10,7 @@ import com.work.library.entity.book.BookEntity;
 import com.work.library.entity.category.CategoryEntity;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -61,9 +58,8 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> searchByTitleOrAuthor(String title, Author author) {
-        String searchAuthor = author != null ? author.value() : null;
-        List<BookEntity> bookEntities = bookJpaRepository.searchByTitleOrAuthor(title, searchAuthor);
+    public List<Book> searchByTitleOrAuthor(String title, String author) {
+        List<BookEntity> bookEntities = bookJpaRepository.searchByTitleOrAuthor(title, author);
         List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBooks(bookEntities);
 
         return toBookListBy(mappingEntities);
@@ -100,16 +96,17 @@ public class BookRepositoryImpl implements BookRepository {
     private List<Book> toBookListBy(List<BookCategoryMappingEntity> mappingEntities) {
         Set<Map.Entry<BookEntity, List<CategoryEntity>>> entries = groupedEntries(mappingEntities);
 
-        return entries.stream().map(entry -> {
-            BookEntity bookEntity = entry.getKey();
+        return entries.stream()
+                .map(entry -> {
+                    BookEntity bookEntity = entry.getKey();
 
-            List<Category> categoryList = entry.getValue().stream()
-                    .map(CategoryEntity::toDomain)
-                    .toList();
-            BookCategories bookCategories = new BookCategories(categoryList);
+                    List<Category> categoryList = entry.getValue().stream()
+                            .map(CategoryEntity::toDomain)
+                            .toList();
+                    BookCategories bookCategories = new BookCategories(categoryList);
 
-            return bookEntity.toDomain(bookCategories);
-        }).toList();
+                    return bookEntity.toDomain(bookCategories);
+                }).toList();
     }
 
     private void unlinkCategoriesByBook(Book book) {

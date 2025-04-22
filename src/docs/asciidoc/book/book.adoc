@@ -1,14 +1,60 @@
 [[book-search-api]]
-== 도서 검색 API
+== 카테고리 별 도서 검색 API
 카테고리 별 도서를 조회합니다.
 
-include::{snippets}/book-search-by-categories/http-request.adoc[]
+=== 성공
+
+[%collapsible]
+.자세히 보기
+====
+
+include::{snippets}/book-search-by-categories-success/http-request.adoc[]
 
 요청 파라미터
-include::{snippets}/book-search-by-categories/query-parameters.adoc[]
+include::{snippets}/book-search-by-categories-success/query-parameters.adoc[]
 
 예시
-include::{snippets}/book-search-by-categories/http-response.adoc[]
+include::{snippets}/book-search-by-categories-success/http-response.adoc[]
 
-요청필드
-include::{snippets}/book-search-by-categories/response-fields.adoc[]
+요청 필드
+include::{snippets}/book-search-by-categories-success/response-fields.adoc[]
+
+====
+
+=== 실패 (카테고리 ID가 포함되지 않는 경우)
+
+[%collapsible]
+.자세히 보기
+====
+
+include::{snippets}/book-search-by-categories-failed/http-request.adoc[]
+
+예시
+include::{snippets}/book-search-by-categories-failed/http-response.adoc[]
+
+요청 필드
+include::{snippets}/book-search-by-categories-failed/response-fields.adoc[]
+
+====
+
+== 지은이 와 책 제목 기준 도서 검색 API
+지은이와 책 제목을 통해 도서를 검색합니다.
+
+=== 성공
+
+[%collapsible]
+.자세히 보기
+====
+
+include::{snippets}/book-search-by-title-or-author/http-request.adoc[]
+
+요청 파라미터
+include::{snippets}/book-search-by-title-or-author/query-parameters.adoc[]
+
+예시
+include::{snippets}/book-search-by-title-or-author/http-response.adoc[]
+
+요청 필드
+include::{snippets}/book-search-by-title-or-author/response-fields.adoc[]
+
+====

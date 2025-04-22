@@ -23,11 +23,25 @@ public class BookController {
         this.bookSearchApplication = bookSearchApplication;
     }
 
-    @GetMapping
+    @GetMapping("/categories")
     public Response<SearchBookListResponse> searchBooksByCategoryIds(
-            @RequestParam("category-ids") List<Long> categoryIds
+            @RequestParam(value = "ids", required = true) List<Long> categoryIds
     ) {
         List<SearchBookResult> results = bookSearchApplication.searchByCategoryIdList(categoryIds);
+        SearchBookListResponse response = SearchBookListResponse.from(results);
+        return Response.create(
+                ResponseType.SUCCESS,
+                ResponseMessage.BookResponseMessage.SUCCESS_BOOK_READ,
+                response
+        );
+    }
+
+    @GetMapping
+    public Response<SearchBookListResponse> searchBooksByTitleOrAuthor(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "author", required = false) String author
+    ) {
+        List<SearchBookResult> results = bookSearchApplication.searchByTileOrAuthor(title, author);
         SearchBookListResponse response = SearchBookListResponse.from(results);
         return Response.create(
                 ResponseType.SUCCESS,

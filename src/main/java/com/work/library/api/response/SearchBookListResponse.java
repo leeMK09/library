@@ -2,6 +2,7 @@ package com.work.library.api.response;
 
 import com.work.library.application.dto.result.SearchBookResult;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -13,7 +14,9 @@ public record SearchBookListResponse(
         List<SearchBookResponse> list
 ) {
     public static SearchBookListResponse from(List<SearchBookResult> results) {
-        List<SearchBookResponse> list = results.stream().map(SearchBookResponse::from).toList();
+        List<SearchBookResponse> list = results.stream()
+                .sorted(Comparator.comparing(SearchBookResult::id))
+                .map(SearchBookResponse::from).toList();
 
         return new SearchBookListResponse(list);
     }
