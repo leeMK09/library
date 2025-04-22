@@ -17,4 +17,8 @@ public class CategoryQueryService {
     public List<Category> findAllByIdList(List<Long> idList) {
         return categoryRepository.findAllByIdList(idList);
     }
+
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
 }

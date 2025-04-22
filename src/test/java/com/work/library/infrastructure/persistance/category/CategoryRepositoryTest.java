@@ -49,4 +49,13 @@ public class CategoryRepositoryTest {
         assertTrue(foundCategoryNames.contains("IT"));
         assertTrue(foundCategoryNames.contains("인문학"));
     }
+
+    @Test
+    void 모든_카테고리를_조회할_수_있다() {
+        // given
+
+        // when
+
+        // then
+    }
 }

@@ -8,4 +8,6 @@ public interface CategoryRepository {
     Category save(Category category);
 
     List<Category> findAllByIdList(List<Long> idList);
+
+    List<Category> findAll();
 }

@@ -41,4 +41,20 @@ class CategoryQueryServiceTest {
         assertTrue(result.contains(category2));
         assertTrue(result.contains(category3));
     }
+
+    @Test
+    void 모든_카테고리를_조회할_수_있다() {
+        String 문학 = "문학";
+        String IT = "IT";
+        String 인문학 = "인문학";
+        Category category1 = new Category(문학);
+        Category category2 = new Category(IT);
+        Category category3 = new Category(인문학);
+
+        when(categoryRepository.findAll())
+                .thenReturn(List.of(category1, category2, category3));
+        categoryQueryService.findAll();
+
+        verify(categoryRepository, times(1)).findAll();
+    }
 }
