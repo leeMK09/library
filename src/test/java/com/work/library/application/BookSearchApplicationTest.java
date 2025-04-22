@@ -37,11 +37,11 @@ class BookSearchApplicationTest {
         List<Long> categoryIdList = List.of(1L, 2L);
         List<Category> foundCategories = List.of(new Category("문학"));
 
-        when(categoryQueryService.findAllByIdList(categoryIdList))
+        when(categoryQueryService.findAllByIds(categoryIdList))
                 .thenReturn(foundCategories);
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
-            bookSearchApplication.searchByCategoryIdList(categoryIdList);
+            bookSearchApplication.searchByCategoryIds(categoryIdList);
         });
         assertEquals(ErrorType.INVALID_PARAMETER, exception.getType());
     }
@@ -54,11 +54,11 @@ class BookSearchApplicationTest {
         Category IT = new Category(2L, "IT");
         Book book = new Book(title, new Author(author), new BookCategories(List.of(문학, IT)));
 
-        when(categoryQueryService.findAllByIdList(List.of(문학.getId(), IT.getId())))
+        when(categoryQueryService.findAllByIds(List.of(문학.getId(), IT.getId())))
                 .thenReturn(List.of(문학, IT));
         when(bookQueryService.findAllByCategories(List.of(문학, IT)))
                 .thenReturn(List.of(book));
-        List<BookResult> searchBookResults = bookSearchApplication.searchByCategoryIdList(List.of(문학.getId(), IT.getId()));
+        List<BookResult> searchBookResults = bookSearchApplication.searchByCategoryIds(List.of(문학.getId(), IT.getId()));
         BookResult result = searchBookResults.getFirst();
 
         assertEquals(1, searchBookResults.size());
@@ -68,7 +68,7 @@ class BookSearchApplicationTest {
         assertEquals("문학", result.categories().get(0).name());
         assertEquals("IT", result.categories().get(1).name());
         verify(bookQueryService, timeout(1)).findAllByCategories(List.of(문학, IT));
-        verify(categoryQueryService, timeout(1)).findAllByIdList(List.of(문학.getId(), IT.getId()));
+        verify(categoryQueryService, timeout(1)).findAllByIds(List.of(문학.getId(), IT.getId()));
     }
 
     @Test

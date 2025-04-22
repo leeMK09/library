@@ -41,7 +41,7 @@ public class CategoryRepositoryTest {
         CategoryEntity category3 = new CategoryEntity(인문학);
         List<CategoryEntity> savedCategories = categoryJpaRepository.saveAll(List.of(category1, category2, category3));
 
-        List<Category> foundCategories = categoryRepository.findAllByIdList(savedCategories.stream().map(CategoryEntity::getId).toList());
+        List<Category> foundCategories = categoryRepository.findAllByIds(savedCategories.stream().map(CategoryEntity::getId).toList());
         List<String> foundCategoryNames = foundCategories.stream().map(Category::getName).toList();
 
         assertFalse(foundCategories.isEmpty());

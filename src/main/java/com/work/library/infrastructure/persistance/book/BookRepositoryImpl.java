@@ -51,7 +51,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findAllByCategoryList(List<Category> categories) {
+    public List<Book> findAllByCategories(List<Category> categories) {
         List<CategoryEntity> categoryEntities = categories.stream().map(Category::toRegisteredEntity).toList();
         List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByCategories(categoryEntities);
         return toBookListBy(mappingEntities);

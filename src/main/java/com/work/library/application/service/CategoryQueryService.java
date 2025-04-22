@@ -14,8 +14,8 @@ public class CategoryQueryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> findAllByIdList(List<Long> idList) {
-        return categoryRepository.findAllByIdList(idList);
+    public List<Category> findAllByIds(List<Long> ids) {
+        return categoryRepository.findAllByIds(ids);
     }
 
     public List<Category> findAll() {

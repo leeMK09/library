@@ -26,13 +26,13 @@ public class BookSearchApplication {
         this.categoryQueryService = categoryQueryService;
     }
 
-    public List<BookResult> searchByCategoryIdList(List<Long> categoryIdList) {
-        List<Category> foundCategories = categoryQueryService.findAllByIdList(categoryIdList);
+    public List<BookResult> searchByCategoryIds(List<Long> categoryIds) {
+        List<Category> foundCategories = categoryQueryService.findAllByIds(categoryIds);
 
-        if (!CollectionUtils.isEqualsSize(foundCategories, categoryIdList)) {
+        if (!CollectionUtils.isEqualsSize(foundCategories, categoryIds)) {
             log.error(
                     "[BookSearchApplication] 요청한 카테고리와 조회된 카테고리의 개수가 다릅니다. requested categories size : {}, found categories size : {}",
-                    categoryIdList,
+                    categoryIds,
                     foundCategories.size()
             );
             throw BookApplicationException.invalidParameterByCategory();

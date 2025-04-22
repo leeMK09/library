@@ -36,7 +36,7 @@ public class BookCategoriesUpdateApplication {
 
     public BookResult changeBookCategories(ChangeBookCategoriesCommand command) {
         Book book = bookQueryService.getById(command.bookId());
-        List<Category> newCategories = categoryQueryService.findAllByIdList(command.newCategoryIdList());
+        List<Category> newCategories = categoryQueryService.findAllByIds(command.newCategoryIdList());
 
         if (!CollectionUtils.isEqualsSize(newCategories, command.newCategoryIdList())) {
             log.error(

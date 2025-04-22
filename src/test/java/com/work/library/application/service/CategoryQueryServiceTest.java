@@ -32,9 +32,9 @@ class CategoryQueryServiceTest {
         Category category3 = new Category(인문학);
         List<Long> categoryIdList = List.of(1L, 2L, 3L);
 
-        when(categoryRepository.findAllByIdList(categoryIdList))
+        when(categoryRepository.findAllByIds(categoryIdList))
                 .thenReturn(List.of(category1, category2, category3));
-        List<Category> result = categoryQueryService.findAllByIdList(categoryIdList);
+        List<Category> result = categoryQueryService.findAllByIds(categoryIdList);
 
         assertFalse(result.isEmpty());
         assertTrue(result.contains(category1));

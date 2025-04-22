@@ -27,7 +27,7 @@ public class BookRegisterApplication {
     }
 
     public Long save(RegisterBookCommand command) {
-        List<Category> categories = categoryQueryService.findAllByIdList(command.categoryIdList());
+        List<Category> categories = categoryQueryService.findAllByIds(command.categoryIdList());
 
         if (categories.isEmpty() || hasMissingCategory(command.categoryIdList(), categories)) {
             log.error(

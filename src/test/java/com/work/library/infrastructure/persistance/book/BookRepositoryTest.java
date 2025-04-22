@@ -108,8 +108,8 @@ public class BookRepositoryTest {
         Book book = new Book(title, new Author(author), bookCategories);
         bookRepository.save(book);
 
-        List<Book> foundBookList = bookRepository.searchByTitleOrAuthor(title, author);
-        Book result = foundBookList.getFirst();
+        List<Book> foundBooks = bookRepository.searchByTitleOrAuthor(title, author);
+        Book result = foundBooks.getFirst();
 
         assertEquals(title, result.getTitle());
         assertEquals(author, result.getAuthor());

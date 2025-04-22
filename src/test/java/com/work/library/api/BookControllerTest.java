@@ -1,6 +1,5 @@
 package com.work.library.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.work.library.api.base.ResponseMessage;
 import com.work.library.api.base.ResponseType;
@@ -17,7 +16,6 @@ import com.work.library.application.exception.ErrorType;
 import com.work.library.config.GlobalExceptionHandler;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -66,7 +64,7 @@ class BookControllerTest {
                     new BookResult(1L, "JPA", "김영한", List.of(new CategoryResult("IT")))
             );
 
-            when(bookSearchApplication.searchByCategoryIdList(List.of(1L, 2L)))
+            when(bookSearchApplication.searchByCategoryIds(List.of(1L, 2L)))
                     .thenReturn(mockResults);
 
             mockMvc.perform(

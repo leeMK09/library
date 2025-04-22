@@ -41,7 +41,7 @@ public class BookController {
     public Response<SearchBookListResponse> searchBooksByCategoryIds(
             @RequestParam(value = "ids", required = true) List<Long> categoryIds
     ) {
-        List<BookResult> results = bookSearchApplication.searchByCategoryIdList(categoryIds);
+        List<BookResult> results = bookSearchApplication.searchByCategoryIds(categoryIds);
         SearchBookListResponse response = SearchBookListResponse.from(results);
         return Response.create(
                 ResponseType.SUCCESS,

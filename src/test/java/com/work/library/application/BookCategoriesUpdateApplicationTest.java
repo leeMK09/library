@@ -9,18 +9,13 @@ import com.work.library.application.service.CategoryQueryService;
 import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
-import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.category.Category;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +42,7 @@ class BookCategoriesUpdateApplicationTest {
                 List.of(1L, 2L)
         );
 
-        when(categoryQueryService.findAllByIdList(commend.newCategoryIdList()))
+        when(categoryQueryService.findAllByIds(commend.newCategoryIdList()))
                 .thenReturn(List.of());
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -68,7 +63,7 @@ class BookCategoriesUpdateApplicationTest {
                 List.of(category1.getId(), category2.getId())
         );
 
-        when(categoryQueryService.findAllByIdList(commend.newCategoryIdList()))
+        when(categoryQueryService.findAllByIds(commend.newCategoryIdList()))
                 .thenReturn(List.of(category1));
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -93,7 +88,7 @@ class BookCategoriesUpdateApplicationTest {
         Book book = new Book(bookId, "JPA", new Author("저자"), bookCategories);
 
         when(bookQueryService.getById(book.getId())).thenReturn(book);
-        when(categoryQueryService.findAllByIdList(List.of(category1.getId(), category2.getId())))
+        when(categoryQueryService.findAllByIds(List.of(category1.getId(), category2.getId())))
                 .thenReturn(List.of(category1, category2));
 
         bookCategoriesUpdateApplication.changeBookCategories(commend);

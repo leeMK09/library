@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -37,7 +36,7 @@ class BookRegisterApplicationTest {
                 List.of(1L, 2L)
         );
 
-        when(categoryQueryService.findAllByIdList(command.categoryIdList()))
+        when(categoryQueryService.findAllByIds(command.categoryIdList()))
                 .thenReturn(List.of());
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -59,7 +58,7 @@ class BookRegisterApplicationTest {
                 List.of(category1.getId(), category2.getId())
         );
 
-        when(categoryQueryService.findAllByIdList(command.categoryIdList()))
+        when(categoryQueryService.findAllByIds(command.categoryIdList()))
                 .thenReturn(List.of(category1));
 
         BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
@@ -81,7 +80,7 @@ class BookRegisterApplicationTest {
                 List.of(category1.getId(), category2.getId())
         );
 
-        when(categoryQueryService.findAllByIdList(command.categoryIdList()))
+        when(categoryQueryService.findAllByIds(command.categoryIdList()))
                 .thenReturn(List.of(category1, category2));
         bookRegisterApplication.save(command);
 

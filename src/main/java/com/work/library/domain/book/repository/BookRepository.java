@@ -12,7 +12,7 @@ public interface BookRepository {
 
     Book save(Book book);
 
-    List<Book> findAllByCategoryList(List<Category> categories);
+    List<Book> findAllByCategories(List<Category> categories);
 
     List<Book> searchByTitleOrAuthor(String title, String author);
 
