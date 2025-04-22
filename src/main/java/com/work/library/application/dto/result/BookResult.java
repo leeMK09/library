@@ -12,19 +12,19 @@ import java.util.List;
  * @param author         도서 저자 이름
  * @param categories     도서에 속한 카테고리 목록
  */
-public record SearchBookResult(
+public record BookResult(
         Long id,
         String title,
         String author,
-        List<SearchCategoryResult> categories
+        List<CategoryResult> categories
 ) {
-    public static List<SearchBookResult> listFrom(List<Book> books) {
-        List<SearchBookResult> result = books.stream()
+    public static List<BookResult> listFrom(List<Book> books) {
+        List<BookResult> result = books.stream()
                 .map(book -> {
                     List<String> categoryNames = book.getCategories().getNames();
-                    List<SearchCategoryResult> categoryResult = categoryNames.stream().map(SearchCategoryResult::new).toList();
+                    List<CategoryResult> categoryResult = categoryNames.stream().map(CategoryResult::new).toList();
 
-                    return new SearchBookResult(
+                    return new BookResult(
                             book.getId(),
                             book.getTitle(),
                             book.getAuthor(),
@@ -33,5 +33,15 @@ public record SearchBookResult(
                 }).toList();
 
         return result;
+    }
+
+    public static BookResult from(Book book) {
+        List<String> categoryNames = book.getCategories().getNames();
+        return new BookResult(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                categoryNames.stream().map(CategoryResult::new).toList()
+        );
     }
 }

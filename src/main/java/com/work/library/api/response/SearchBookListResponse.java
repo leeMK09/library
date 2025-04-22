@@ -1,6 +1,6 @@
 package com.work.library.api.response;
 
-import com.work.library.application.dto.result.SearchBookResult;
+import com.work.library.application.dto.result.BookResult;
 
 import java.util.Comparator;
 import java.util.List;
@@ -13,9 +13,9 @@ import java.util.List;
 public record SearchBookListResponse(
         List<SearchBookResponse> list
 ) {
-    public static SearchBookListResponse from(List<SearchBookResult> results) {
+    public static SearchBookListResponse from(List<BookResult> results) {
         List<SearchBookResponse> list = results.stream()
-                .sorted(Comparator.comparing(SearchBookResult::id))
+                .sorted(Comparator.comparing(BookResult::id))
                 .map(SearchBookResponse::from).toList();
 
         return new SearchBookListResponse(list);

@@ -6,6 +6,7 @@ import com.work.library.application.exception.ErrorType;
 import com.work.library.application.service.BookCommandService;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
+import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
 import com.work.library.domain.book.event.BookCategoriesChangedEvent;
@@ -81,13 +82,15 @@ class BookCategoriesUpdateApplicationTest {
 
     @Test
     void 도서의_카테고리를_변경할_수_있다() {
+        Long bookId = 1L;
         Category category1 = new Category(1L, "문학");
         Category category2 = new Category(2L, "IT");
+        BookCategories bookCategories = new BookCategories(List.of(category1, category2));
         ChangeBookCategoriesCommand commend = new ChangeBookCategoriesCommand(
-                0L,
+                bookId,
                 List.of(category1.getId(), category2.getId())
         );
-        Book book = mock(Book.class);
+        Book book = new Book(bookId, "JPA", new Author("저자"), bookCategories);
 
         when(bookQueryService.getById(book.getId())).thenReturn(book);
         when(categoryQueryService.findAllByIdList(List.of(category1.getId(), category2.getId())))

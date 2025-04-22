@@ -3,38 +3,45 @@ package com.work.library.api;
 import com.work.library.api.base.Response;
 import com.work.library.api.base.ResponseMessage;
 import com.work.library.api.base.ResponseType;
+import com.work.library.api.request.ChangeBookCategoriesRequest;
 import com.work.library.api.request.RegisterBookRequest;
+import com.work.library.api.response.ChangeBookCategoriesResponse;
 import com.work.library.api.response.RegisteredBookResponse;
 import com.work.library.api.response.SearchBookListResponse;
+import com.work.library.application.BookCategoriesUpdateApplication;
 import com.work.library.application.BookRegisterApplication;
 import com.work.library.application.BookSearchApplication;
-import com.work.library.application.dto.result.SearchBookResult;
+import com.work.library.application.dto.result.BookResult;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("books")
+@RequestMapping("/v1/books")
 public class BookController {
 
     private final BookSearchApplication bookSearchApplication;
 
     private final BookRegisterApplication bookRegisterApplication;
 
+    private final BookCategoriesUpdateApplication bookCategoriesUpdateApplication;
+
     public BookController(
             BookSearchApplication bookSearchApplication,
-            BookRegisterApplication bookRegisterApplication
+            BookRegisterApplication bookRegisterApplication,
+            BookCategoriesUpdateApplication bookCategoriesUpdateApplication
     ) {
         this.bookSearchApplication = bookSearchApplication;
         this.bookRegisterApplication = bookRegisterApplication;
+        this.bookCategoriesUpdateApplication = bookCategoriesUpdateApplication;
     }
 
     @GetMapping("/categories")
     public Response<SearchBookListResponse> searchBooksByCategoryIds(
             @RequestParam(value = "ids", required = true) List<Long> categoryIds
     ) {
-        List<SearchBookResult> results = bookSearchApplication.searchByCategoryIdList(categoryIds);
+        List<BookResult> results = bookSearchApplication.searchByCategoryIdList(categoryIds);
         SearchBookListResponse response = SearchBookListResponse.from(results);
         return Response.create(
                 ResponseType.SUCCESS,
@@ -48,7 +55,7 @@ public class BookController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "author", required = false) String author
     ) {
-        List<SearchBookResult> results = bookSearchApplication.searchByTileOrAuthor(title, author);
+        List<BookResult> results = bookSearchApplication.searchByTileOrAuthor(title, author);
         SearchBookListResponse response = SearchBookListResponse.from(results);
         return Response.create(
                 ResponseType.SUCCESS,
@@ -66,6 +73,20 @@ public class BookController {
         return Response.create(
                 ResponseType.SUCCESS,
                 ResponseMessage.BookResponseMessage.SUCCESS_BOOK_SAVE,
+                response
+        );
+    }
+
+    @PatchMapping("/{bookId}/categories")
+    public Response<ChangeBookCategoriesResponse> changeCategories(
+            @PathVariable Long bookId,
+            @Valid @RequestBody ChangeBookCategoriesRequest request
+    ) {
+        BookResult result = bookCategoriesUpdateApplication.changeBookCategories(request.toCommand(bookId));
+        ChangeBookCategoriesResponse response = ChangeBookCategoriesResponse.from(result);
+        return Response.create(
+                ResponseType.SUCCESS,
+                ResponseMessage.BookResponseMessage.SUCCESS_BOOK_CATEGORIES_CHANGE,
                 response
         );
     }

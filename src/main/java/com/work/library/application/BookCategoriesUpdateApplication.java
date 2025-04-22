@@ -1,19 +1,17 @@
 package com.work.library.application;
 
 import com.work.library.application.dto.command.ChangeBookCategoriesCommand;
+import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.service.BookCommandService;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
-import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.category.Category;
 import com.work.library.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class BookCategoriesUpdateApplication {
         this.categoryQueryService = categoryQueryService;
     }
 
-    public void changeBookCategories(ChangeBookCategoriesCommand command) {
+    public BookResult changeBookCategories(ChangeBookCategoriesCommand command) {
         Book book = bookQueryService.getById(command.bookId());
         List<Category> newCategories = categoryQueryService.findAllByIdList(command.newCategoryIdList());
 
@@ -50,5 +48,6 @@ public class BookCategoriesUpdateApplication {
         }
         BookCategories newBookCategories = new BookCategories(newCategories);
         bookCommandService.changeBookCategories(book, newBookCategories);
+        return BookResult.from(book);
     }
 }

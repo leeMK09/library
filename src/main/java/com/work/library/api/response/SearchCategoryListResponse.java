@@ -1,6 +1,6 @@
 package com.work.library.api.response;
 
-import com.work.library.application.dto.result.SearchCategoryResult;
+import com.work.library.application.dto.result.CategoryResult;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public record SearchCategoryListResponse(
         List<SearchCategoryResponse> list
 ) {
-    public static SearchCategoryListResponse from(List<SearchCategoryResult> results) {
+    public static SearchCategoryListResponse from(List<CategoryResult> results) {
         List<SearchCategoryResponse> list = SearchCategoryResponse.listFrom(results);
 
         return new SearchCategoryListResponse(list);

@@ -5,7 +5,7 @@ package com.work.library.application.dto.result;
  *
  * @param name  카테고리 이름
  */
-public record SearchCategoryResult(
+public record CategoryResult(
         String name
 ) {
 }

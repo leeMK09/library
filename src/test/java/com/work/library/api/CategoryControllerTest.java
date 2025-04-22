@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.work.library.api.base.ResponseMessage;
 import com.work.library.api.base.ResponseType;
 import com.work.library.application.CategorySearchApplication;
-import com.work.library.application.dto.result.SearchCategoryResult;
+import com.work.library.application.dto.result.CategoryResult;
 import com.work.library.config.GlobalExceptionHandler;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,17 +45,17 @@ class CategoryControllerTest {
     class Read {
         @Test
         void 모든_카테고리_조회_성공시_200_응답을_반환한다() throws Exception {
-            List<SearchCategoryResult> mockResults = List.of(
-                    new SearchCategoryResult("문학"),
-                    new SearchCategoryResult("IT"),
-                    new SearchCategoryResult("인문학")
+            List<CategoryResult> mockResults = List.of(
+                    new CategoryResult("문학"),
+                    new CategoryResult("IT"),
+                    new CategoryResult("인문학")
             );
 
             Mockito.when(categorySearchApplication.findAll())
                     .thenReturn(mockResults);
 
             mockMvc.perform(
-                    get("/categories")
+                    get("/v1/categories")
                             .contentType(MediaType.APPLICATION_JSON)
             )
                     .andExpect(status().isOk())

@@ -1,6 +1,6 @@
 package com.work.library.application;
 
-import com.work.library.application.dto.result.SearchBookResult;
+import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.exception.ErrorType;
 import com.work.library.application.service.BookQueryService;
@@ -58,8 +58,8 @@ class BookSearchApplicationTest {
                 .thenReturn(List.of(문학, IT));
         when(bookQueryService.findAllByCategories(List.of(문학, IT)))
                 .thenReturn(List.of(book));
-        List<SearchBookResult> searchBookResults = bookSearchApplication.searchByCategoryIdList(List.of(문학.getId(), IT.getId()));
-        SearchBookResult result = searchBookResults.getFirst();
+        List<BookResult> searchBookResults = bookSearchApplication.searchByCategoryIdList(List.of(문학.getId(), IT.getId()));
+        BookResult result = searchBookResults.getFirst();
 
         assertEquals(1, searchBookResults.size());
         assertEquals(title, result.title());

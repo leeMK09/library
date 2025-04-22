@@ -1,6 +1,6 @@
 package com.work.library.api.response;
 
-import com.work.library.application.dto.result.SearchBookResult;
+import com.work.library.application.dto.result.BookResult;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public record SearchBookResponse(
         String author,
         List<SearchCategoryResponse> categories
 ) {
-    public static SearchBookResponse from(SearchBookResult result) {
+    public static SearchBookResponse from(BookResult result) {
         return new SearchBookResponse(
                 result.id(),
                 result.title(),

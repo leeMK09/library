@@ -1,10 +1,9 @@
 package com.work.library.application;
 
-import com.work.library.application.dto.result.SearchBookResult;
+import com.work.library.application.dto.result.BookResult;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.application.service.BookQueryService;
 import com.work.library.application.service.CategoryQueryService;
-import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.category.Category;
 import com.work.library.utils.CollectionUtils;
@@ -27,7 +26,7 @@ public class BookSearchApplication {
         this.categoryQueryService = categoryQueryService;
     }
 
-    public List<SearchBookResult> searchByCategoryIdList(List<Long> categoryIdList) {
+    public List<BookResult> searchByCategoryIdList(List<Long> categoryIdList) {
         List<Category> foundCategories = categoryQueryService.findAllByIdList(categoryIdList);
 
         if (!CollectionUtils.isEqualsSize(foundCategories, categoryIdList)) {
@@ -42,13 +41,13 @@ public class BookSearchApplication {
         List<Book> books = bookQueryService.findAllByCategories(foundCategories);
 
         log.info("[BookSearchApplication] 카테고리별 도서 조회 성공");
-        return SearchBookResult.listFrom(books);
+        return BookResult.listFrom(books);
     }
 
-    public List<SearchBookResult> searchByTileOrAuthor(String title, String author) {
+    public List<BookResult> searchByTileOrAuthor(String title, String author) {
         List<Book> books = bookQueryService.searchByTitleOrAuthor(title, author);
 
         log.info("[BookSearchApplication] 지은이, 책 제목 기준 도서 조회 성공");
-        return SearchBookResult.listFrom(books);
+        return BookResult.listFrom(books);
     }
 }
