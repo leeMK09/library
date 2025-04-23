@@ -24,7 +24,7 @@ public class BookApplicationException extends ApplicationException {
 
     public static BookApplicationException notFoundBooks() {
         return new BookApplicationException(
-                ErrorType.INVALID_PARAMETER,
+                ErrorType.RESOURCE_NOT_FOUND,
                 NOT_FOUND_BOOK
         );
     }

@@ -18,6 +18,7 @@ public class BookCategoriesChangedEventHandler {
     @EventListener
     public void handleEvent(BookCategoriesChangedEvent event) {
         log.info("[BookCategoriesChangedEventHandler] Received event: {}, eventTime: {}", event, event.timestamp());
-        bookRepository.remapCategoriesToBook(event.book(), event.newBookCategories());
+        bookRepository.deleteAllMappingsByBook(event.book());
+        bookRepository.save(event.book());
     }
 }

@@ -24,9 +24,7 @@ class BookCategoriesChangedEventHandlerTest {
 
         bookCategoriesChangedEventHandler.handleEvent(event);
 
-        verify(bookRepository, times(1)).remapCategoriesToBook(
-                event.book(),
-                event.newBookCategories()
-        );
+        verify(bookRepository, times(1)).deleteAllMappingsByBook(any());
+        verify(bookRepository, times(1)).save(any());
     }
 }

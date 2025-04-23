@@ -3,8 +3,10 @@ package com.work.library.application.service;
 import com.work.library.application.exception.BookApplicationException;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
+import com.work.library.domain.book.RentalHistory;
 import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.book.repository.BookRepository;
+import com.work.library.domain.book.repository.RentalHistoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,16 +19,20 @@ import java.time.LocalDateTime;
 public class BookCommandService {
     private final BookRepository bookRepository;
 
+    private final RentalHistoryRepository rentalHistoryRepository;
+
     private final RentalPolicy rentalPolicy;
 
     private final ApplicationEventPublisher eventPublisher;
 
     public BookCommandService(
             BookRepository bookRepository,
+            RentalHistoryRepository rentalHistoryRepository,
             RentalPolicy rentalPolicy,
             ApplicationEventPublisher eventPublisher
     ) {
         this.bookRepository = bookRepository;
+        this.rentalHistoryRepository = rentalHistoryRepository;
         this.rentalPolicy = rentalPolicy;
         this.eventPublisher = eventPublisher;
     }
@@ -52,7 +58,11 @@ public class BookCommandService {
         book.rental();
         LocalDateTime rentedAt = rentalPolicy.getRentedAt();
         LocalDateTime expiredAt = rentalPolicy.getExpiredAt(rentedAt);
-        Book rentedBook = bookRepository.rental(book, rentedAt, expiredAt);
-        return rentedBook;
+
+        RentalHistory rentalHistory = new RentalHistory(book, rentedAt, expiredAt);
+
+        rentalHistoryRepository.save(rentalHistory);
+        bookRepository.update(book);
+        return book;
     }
 }

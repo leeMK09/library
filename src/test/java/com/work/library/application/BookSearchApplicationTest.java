@@ -79,10 +79,10 @@ class BookSearchApplicationTest {
         BookCategories bookCategories = new BookCategories(List.of(category));
         Book book = new Book(title, new Author(author), bookCategories);
 
-        when(bookQueryService.searchByTitleOrAuthor(title, author))
+        when(bookQueryService.searchAllByTitleOrAuthor(title, author))
                 .thenReturn(List.of(book));
         bookSearchApplication.searchByTileOrAuthor(title, author);
 
-        verify(bookQueryService, timeout(1)).searchByTitleOrAuthor(title, author);
+        verify(bookQueryService, timeout(1)).searchAllByTitleOrAuthor(title, author);
     }
 }

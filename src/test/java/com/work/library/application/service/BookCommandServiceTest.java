@@ -5,8 +5,10 @@ import com.work.library.application.exception.ErrorType;
 import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
+import com.work.library.domain.book.RentalHistory;
 import com.work.library.domain.book.event.BookCategoriesChangedEvent;
 import com.work.library.domain.book.repository.BookRepository;
+import com.work.library.domain.book.repository.RentalHistoryRepository;
 import com.work.library.domain.category.Category;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,9 @@ class BookCommandServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private RentalHistoryRepository rentalHistoryRepository;
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
@@ -90,10 +95,24 @@ class BookCommandServiceTest {
 
         when(rentalPolicy.getRentedAt()).thenReturn(rentedAt);
         when(rentalPolicy.getExpiredAt(rentedAt)).thenReturn(expiredAt);
-        when(bookRepository.rental(eq(book), eq(rentedAt), eq(expiredAt))).thenReturn(book);
 
         bookCommandService.rental(book);
 
-        verify(bookRepository, times(1)).rental(eq(book), eq(rentedAt), eq(expiredAt));
+        verify(book, times(1)).rental();
+    }
+
+    @Test
+    void 도서를_대여하면_대여이력을_저장한다() {
+        Book book = mock(Book.class);
+        LocalDateTime rentedAt = LocalDateTime.now();
+        LocalDateTime expiredAt = rentedAt.plusDays(30);
+
+        when(rentalPolicy.getRentedAt()).thenReturn(rentedAt);
+        when(rentalPolicy.getExpiredAt(rentedAt)).thenReturn(expiredAt);
+
+        bookCommandService.rental(book);
+
+        verify(book, times(1)).rental();
+        verify(rentalHistoryRepository, times(1)).save(any());
     }
 }

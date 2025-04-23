@@ -39,6 +39,13 @@ public class BookCategories {
         ).toList();
     }
 
+    public static BookCategories fromEntities(List<CategoryEntity> entities) {
+        List<Category> categories = entities.stream()
+                .map(CategoryEntity::toDomain)
+                .toList();
+        return new BookCategories(categories);
+    }
+
     private boolean hasDuplicated(List<Category> categories) {
         return categories.size() != categories.stream().distinct().count();
     }

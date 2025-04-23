@@ -58,12 +58,12 @@ class BookQueryServiceTest {
         BookCategories bookCategories = new BookCategories(List.of(category));
         Book book = new Book(title, new Author(author), bookCategories);
 
-        when(bookRepository.searchByTitleOrAuthor(title, author))
+        when(bookRepository.searchAllByTitleOrAuthor(title, author))
                 .thenReturn(List.of(book));
 
-        bookQueryService.searchByTitleOrAuthor(title, author);
+        bookQueryService.searchAllByTitleOrAuthor(title, author);
 
-        verify(bookRepository, times(1)).searchByTitleOrAuthor(title, author);
+        verify(bookRepository, times(1)).searchAllByTitleOrAuthor(title, author);
     }
 
     @Test
@@ -76,7 +76,7 @@ class BookQueryServiceTest {
             bookQueryService.getById(bookId);
         });
         assertEquals(
-                ErrorType.INVALID_PARAMETER,
+                ErrorType.RESOURCE_NOT_FOUND,
                 exception.getType()
         );
     }
