@@ -109,4 +109,38 @@ class BookTest {
         BookException exception = assertThrows(BookException.class, () -> book.changeCategories(null));
         assertEquals(ErrorMessage.BOOK_CATEGORIES_BLANK, exception.getMessage());
     }
+
+    @Test
+    void 책은_자신이_훼손되었는지_판단할_수_있다() {
+        Book damagedBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book normalBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        damagedBook.damaged();
+
+        boolean damaged = damagedBook.isDamaged();
+        boolean unDamaged = normalBook.isDamaged();
+
+        assertTrue(damaged);
+        assertFalse(unDamaged);
+    }
+
+    @Test
+    void 책을_대여할_수_있다() {
+        Book book = new Book("JPA", new Author("김영한"), categoriesFixture);
+        book.rental();
+
+        assertEquals(BookStatus.RENTED, book.getStatus());
+    }
+
+    @Test
+    void 책은_자신이_대여중인지_판단할_수_있다() {
+        Book rentedBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book normalBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        rentedBook.rental();
+
+        boolean rented = rentedBook.isRented();
+        boolean unRented = normalBook.isRented();
+
+        assertTrue(rented);
+        assertFalse(unRented);
+    }
 }

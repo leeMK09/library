@@ -35,7 +35,7 @@ public class BookSearchApplication {
                     categoryIds,
                     foundCategories.size()
             );
-            throw BookApplicationException.invalidParameterByCategory();
+            throw BookApplicationException.notFoundCategories();
         }
 
         List<Book> books = bookQueryService.findAllByCategories(foundCategories);

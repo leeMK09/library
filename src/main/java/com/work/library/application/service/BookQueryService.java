@@ -29,12 +29,17 @@ public class BookQueryService {
         return result;
     }
 
+    public Optional<Book> searchByTitleAndAuthor(String title, String author) {
+        Optional<Book> book = bookRepository.searchByTitleAndAuthor(title, author);
+        return book;
+    }
+
     public Book getById(Long id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
             log.error("[BookQueryService] 요청한 도서는 존재하지 않습니다. requested book id : {}", id);
-            throw BookApplicationException.invalidParameterByBook();
+            throw BookApplicationException.notFoundBooks();
         }
 
         return book.get();

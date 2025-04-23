@@ -77,6 +77,18 @@ public class Book {
         this.status = BookStatus.DAMAGED;
     }
 
+    public void rental() {
+        this.status = BookStatus.RENTED;
+    }
+
+    public boolean isDamaged() {
+        return this.status == BookStatus.DAMAGED;
+    }
+
+    public boolean isRented() {
+        return this.status == BookStatus.RENTED;
+    }
+
     public BookCategoriesChangedEvent changeCategories(BookCategories newBookCategories) {
         if (newBookCategories == null) {
             throw BookException.emptyCategories();

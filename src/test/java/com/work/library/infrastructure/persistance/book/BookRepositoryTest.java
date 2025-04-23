@@ -8,14 +8,18 @@ import com.work.library.domain.book.repository.BookRepository;
 import com.work.library.domain.category.Category;
 import com.work.library.domain.category.repository.CategoryRepository;
 import com.work.library.entity.book.BookCategoryMappingEntity;
+import com.work.library.entity.book.RentalHistoryEntity;
 import com.work.library.entity.category.CategoryEntity;
 import com.work.library.infrastructure.persistance.category.CategoryRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +31,9 @@ public class BookRepositoryTest {
 
     @Autowired
     private BookCategoriesJpaRepository bookCategoriesJpaRepository;
+
+    @Autowired
+    private RentalHistoryJpaRepository rentalHistoryJpaRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -61,108 +68,152 @@ public class BookRepositoryTest {
         assertEquals(bookCategories.size(), savedBook.getCategories().size());
     }
 
-    @Test
-    void 카테고리별_도서_목록을_조회할_수_있다() {
-        String title = "JPA";
-        Author author = new Author("김영한");
-        BookCategories 문학_IT_카테고리 = new BookCategories(
-                List.of(
-                        savedCategories.getFirst(),
-                        savedCategories.get(1)
-                )
-        );
-        BookCategories 인문학_카테고리 = new BookCategories(
-                List.of(
-                        savedCategories.get(2)
-                )
-        );
-        Book book1 = new Book(title, author, 문학_IT_카테고리);
-        Book book2 = new Book(title, author, 인문학_카테고리);
-        Book 문학_IT_카테고리_도서 = bookRepository.save(book1);
-        Book 인문학_카테고리_도서 = bookRepository.save(book2);
+    @Nested
+    class Read {
+        @Test
+        void 카테고리별_도서_목록을_조회할_수_있다() {
+            String title = "JPA";
+            Author author = new Author("김영한");
+            BookCategories 문학_IT_카테고리 = new BookCategories(
+                    List.of(
+                            savedCategories.getFirst(),
+                            savedCategories.get(1)
+                    )
+            );
+            BookCategories 인문학_카테고리 = new BookCategories(
+                    List.of(
+                            savedCategories.get(2)
+                    )
+            );
+            Book book1 = new Book(title, author, 문학_IT_카테고리);
+            Book book2 = new Book(title, author, 인문학_카테고리);
+            Book 문학_IT_카테고리_도서 = bookRepository.save(book1);
+            Book 인문학_카테고리_도서 = bookRepository.save(book2);
 
-        assertTrue(
-                문학_IT_카테고리_도서.getCategories().getNames().contains(
-                        "문학"
-                )
-        );
-        assertTrue(
-                문학_IT_카테고리_도서.getCategories().getNames().contains(
-                        "IT"
-                )
-        );
-        assertTrue(
-                인문학_카테고리_도서.getCategories().getNames().contains(
-                        "인문학"
-                )
-        );
+            assertTrue(
+                    문학_IT_카테고리_도서.getCategories().getNames().contains(
+                            "문학"
+                    )
+            );
+            assertTrue(
+                    문학_IT_카테고리_도서.getCategories().getNames().contains(
+                            "IT"
+                    )
+            );
+            assertTrue(
+                    인문학_카테고리_도서.getCategories().getNames().contains(
+                            "인문학"
+                    )
+            );
+        }
+
+        @Test
+        void 지은이와_책_제목으로_도서를_검색할_수_있다() {
+            String title = "JPA";
+            String author = "김영한";
+            Category category = new Category("문학");
+            Category savedCategory = categoryRepository.save(category);
+            BookCategories bookCategories = new BookCategories(List.of(savedCategory));
+            Book book = new Book(title, new Author(author), bookCategories);
+            bookRepository.save(book);
+
+            List<Book> foundBooks = bookRepository.searchByTitleOrAuthor(title, author);
+            Book result = foundBooks.getFirst();
+
+            assertEquals(title, result.getTitle());
+            assertEquals(author, result.getAuthor());
+        }
+
+        @Test
+        void 지은이_혹은_책_제목_중_하나가_없더라도_일치하는_도서를_검색할_수_있다() {
+            String title = "JPA";
+            String author = "김영한";
+            Category category = new Category("문학");
+            Category savedCategory = categoryRepository.save(category);
+            BookCategories bookCategories = new BookCategories(List.of(savedCategory));
+            Book book = new Book(title, new Author(author), bookCategories);
+            bookRepository.save(book);
+
+            List<Book> foundBookListWithoutAuthor = bookRepository.searchByTitleOrAuthor(title, null);
+            List<Book> foundBookListWithoutTitle = bookRepository.searchByTitleOrAuthor(null, author);
+            Book foundBookWithoutAuthor = foundBookListWithoutAuthor.getFirst();
+            Book foundBookWithoutTitle = foundBookListWithoutTitle.getFirst();
+
+            assertEquals(title, foundBookWithoutTitle.getTitle());
+            assertEquals(title, foundBookWithoutAuthor.getTitle());
+            assertEquals(author, foundBookWithoutTitle.getAuthor());
+            assertEquals(author, foundBookWithoutAuthor.getAuthor());
+        }
+
+        @Test
+        void 지은이와_제목에_일치하는_도서를_조회할_수_있다() {
+            String title = "JPA";
+            String author = "김영한";
+            Category category = new Category("IT");
+            Category savedCategory = categoryRepository.save(category);
+            BookCategories bookCategories = new BookCategories(List.of(savedCategory));
+            Book book = new Book(title, new Author(author), bookCategories);
+            bookRepository.save(book);
+
+            Book foundBook = bookRepository.searchByTitleAndAuthor(title, author).orElseThrow();
+
+            assertEquals(title, foundBook.getTitle());
+            assertEquals(author, foundBook.getAuthor());
+        }
     }
 
-    @Test
-    void 지은이와_책_제목으로_도서를_검색할_수_있다() {
-        String title = "JPA";
-        String author = "김영한";
-        Category category = new Category("문학");
-        Category savedCategory = categoryRepository.save(category);
-        BookCategories bookCategories = new BookCategories(List.of(savedCategory));
-        Book book = new Book(title, new Author(author), bookCategories);
-        bookRepository.save(book);
+    @Nested
+    class Update {
+        @Test
+        void 도서와_카테고리를_변경할_수_있다() {
+            String title = "JPA";
+            Author author = new Author("김영한");
+            Category oldCategory = new Category("문학");
+            Category newCategory = new Category("IT");
+            Category savedOldCategory = categoryRepository.save(oldCategory);
+            Category savedNewCategory = categoryRepository.save(newCategory);
+            BookCategories bookCategories = new BookCategories(List.of(savedOldCategory));
+            Book book = new Book(title, author, bookCategories);
+            Book savedBook = bookRepository.save(book);
 
-        List<Book> foundBooks = bookRepository.searchByTitleOrAuthor(title, author);
-        Book result = foundBooks.getFirst();
+            BookCategories newBookCategories = new BookCategories(List.of(savedNewCategory));
+            bookRepository.remapCategoriesToBook(savedBook, newBookCategories);
+            List<BookCategoryMappingEntity> entities = bookCategoriesJpaRepository.findAllByBook(savedBook.toRegisteredEntity());
+            List<CategoryEntity> categories = entities.stream().map(BookCategoryMappingEntity::getCategory).toList();
+            List<String> result = categories.stream().map(CategoryEntity::getName).toList();
 
-        assertEquals(title, result.getTitle());
-        assertEquals(author, result.getAuthor());
-    }
+            assertTrue(
+                    result.contains(
+                            newCategory.getName()
+                    )
+            );
+            assertFalse(
+                    result.contains(
+                            oldCategory.getName()
+                    )
+            );
+        }
 
-    @Test
-    void 지은이_혹은_책_제목_중_하나가_없더라도_일치하는_도서를_검색할_수_있다() {
-        String title = "JPA";
-        String author = "김영한";
-        Category category = new Category("문학");
-        Category savedCategory = categoryRepository.save(category);
-        BookCategories bookCategories = new BookCategories(List.of(savedCategory));
-        Book book = new Book(title, new Author(author), bookCategories);
-        bookRepository.save(book);
+        @Test
+        void 도서를_대여하면_대여_히스토리에_대여정보를_저장한다() {
+            String title = "JPA";
+            Author author = new Author("김영한");
+            Category category = new Category("IT");
+            Category savedCategory = categoryRepository.save(category);
+            BookCategories bookCategories = new BookCategories(List.of(savedCategory));
+            Book book = new Book(title, author, bookCategories);
+            Book savedBook = bookRepository.save(book);
+            LocalDateTime rentedAt = LocalDateTime.now();
+            LocalDateTime expiredAt = LocalDateTime.now().plusDays(30);
 
-        List<Book> foundBookListWithoutAuthor = bookRepository.searchByTitleOrAuthor(title, null);
-        List<Book> foundBookListWithoutTitle = bookRepository.searchByTitleOrAuthor(null, author);
-        Book foundBookWithoutAuthor = foundBookListWithoutAuthor.getFirst();
-        Book foundBookWithoutTitle = foundBookListWithoutTitle.getFirst();
+            bookRepository.rental(savedBook, rentedAt, expiredAt);
+            RentalHistoryEntity result = rentalHistoryJpaRepository.findByBook(savedBook.toRegisteredEntity()).orElseThrow();
+            Book foundBookByResult = result.getBook().toDomain(bookCategories);
 
-        assertEquals(title, foundBookWithoutTitle.getTitle());
-        assertEquals(title, foundBookWithoutAuthor.getTitle());
-        assertEquals(author, foundBookWithoutTitle.getAuthor());
-        assertEquals(author, foundBookWithoutAuthor.getAuthor());
-    }
-
-    @Test
-    void 도서와_카테고리를_변경할_수_있다() {
-        String title = "JPA";
-        Author author = new Author("김영한");
-        Category oldCategory = new Category("문학");
-        Category newCategory = new Category("IT");
-        Category savedOldCategory = categoryRepository.save(oldCategory);
-        Category savedNewCategory = categoryRepository.save(newCategory);
-        BookCategories bookCategories = new BookCategories(List.of(savedOldCategory));
-        Book book = new Book(title, author, bookCategories);
-        Book savedBook = bookRepository.save(book);
-
-        BookCategories newBookCategories = new BookCategories(List.of(savedNewCategory));
-        bookRepository.remapCategoriesToBook(savedBook, newBookCategories);
-        List<BookCategoryMappingEntity> entities = bookCategoriesJpaRepository.findAllByBook(savedBook.toRegisteredEntity());
-        List<CategoryEntity> categories = entities.stream().map(BookCategoryMappingEntity::getCategory).toList();
-        List<String> result = categories.stream().map(CategoryEntity::getName).toList();
-
-        assertTrue(
-                result.contains(
-                        newCategory.getName()
-                )
-        );
-        assertFalse(
-                result.contains(
-                        oldCategory.getName()
-                )
-        );
+            assertEquals(title, foundBookByResult.getTitle());
+            assertEquals(author.value(), foundBookByResult.getAuthor());
+            assertEquals(rentedAt, result.getRentedAt());
+            assertEquals(expiredAt, result.getExpiredAt());
+        }
     }
 }

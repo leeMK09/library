@@ -16,6 +16,7 @@ public record BookResult(
         Long id,
         String title,
         String author,
+        String status,
         List<CategoryResult> categories
 ) {
     public static List<BookResult> listFrom(List<Book> books) {
@@ -28,6 +29,7 @@ public record BookResult(
                             book.getId(),
                             book.getTitle(),
                             book.getAuthor(),
+                            book.getStatus().name(),
                             categoryResult
                     );
                 }).toList();
@@ -41,6 +43,7 @@ public record BookResult(
                 book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
+                book.getStatus().name(),
                 categoryNames.stream().map(CategoryResult::new).toList()
         );
     }

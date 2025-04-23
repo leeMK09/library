@@ -7,9 +7,11 @@ import com.work.library.domain.book.repository.BookRepository;
 import com.work.library.domain.category.Category;
 import com.work.library.entity.book.BookCategoryMappingEntity;
 import com.work.library.entity.book.BookEntity;
+import com.work.library.entity.book.RentalHistoryEntity;
 import com.work.library.entity.category.CategoryEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,12 +21,16 @@ public class BookRepositoryImpl implements BookRepository {
 
     private final BookCategoriesJpaRepository bookCategoriesJpaRepository;
 
+    private final RentalHistoryJpaRepository rentalHistoryJpaRepository;
+
     public BookRepositoryImpl(
             BookJpaRepository bookJpaRepository,
-            BookCategoriesJpaRepository bookCategoriesJpaRepository
+            BookCategoriesJpaRepository bookCategoriesJpaRepository,
+            RentalHistoryJpaRepository rentalHistoryJpaRepository
     ) {
         this.bookJpaRepository = bookJpaRepository;
         this.bookCategoriesJpaRepository = bookCategoriesJpaRepository;
+        this.rentalHistoryJpaRepository = rentalHistoryJpaRepository;
     }
 
     @Override
@@ -70,6 +76,25 @@ public class BookRepositoryImpl implements BookRepository {
         unlinkCategoriesByBook(book);
         book.changeCategories(newBookCategories);
         mappedCategories(book);
+        return book;
+    }
+
+    @Override
+    public Optional<Book> searchByTitleAndAuthor(String title, String author) {
+        Optional<BookEntity> bookEntity = bookJpaRepository.searchByTitleAndAuthor(title, author);
+        return bookEntity.map(entity -> {
+            List<BookCategoryMappingEntity> mappingEntities = bookCategoriesJpaRepository.findAllByBook(entity);
+            Book result = toBookListBy(mappingEntities).getFirst();
+            return result;
+        });
+    }
+
+    @Override
+    public Book rental(Book book, LocalDateTime rentedAt, LocalDateTime expiredAt) {
+        BookEntity bookEntity = book.toRegisteredEntity();
+        RentalHistoryEntity rentalHistoryEntity = new RentalHistoryEntity(bookEntity, rentedAt, expiredAt);
+        rentalHistoryJpaRepository.save(rentalHistoryEntity);
+        bookJpaRepository.save(bookEntity);
         return book;
     }
 
