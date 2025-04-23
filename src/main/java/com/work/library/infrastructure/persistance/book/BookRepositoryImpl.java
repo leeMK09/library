@@ -94,6 +94,7 @@ public class BookRepositoryImpl implements BookRepository {
         BookEntity bookEntity = book.toRegisteredEntity();
         RentalHistoryEntity rentalHistoryEntity = new RentalHistoryEntity(bookEntity, rentedAt, expiredAt);
         rentalHistoryJpaRepository.save(rentalHistoryEntity);
+        bookJpaRepository.save(bookEntity);
         return book;
     }
 

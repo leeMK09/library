@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response> handleApplicationException(ApplicationException e) {
         log.error("ApplicationException errorType = {}, message = {}, className = {}", e.getType(), e.getMessage(), e.getClass().getName());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Response.createErrorResponse(ErrorType.INVALID_PARAMETER, ErrorType.INVALID_PARAMETER.getDescription()));
+                .body(Response.createErrorResponse(e.getType(), e.getType().getDescription()));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Response> handleNoResourceFoundException(NoResourceFoundException e) {
         log.error("NoResourceFoundException message = {}, className = {}", e.getMessage(), e.getClass().getName());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Response.createErrorResponse(ErrorType.RESOURCE_NOT_FOUND, ErrorType.RESOURCE_NOT_FOUND.getDescription()));
     }
 
