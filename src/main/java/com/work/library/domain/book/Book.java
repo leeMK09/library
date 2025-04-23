@@ -77,6 +77,10 @@ public class Book {
         this.status = BookStatus.DAMAGED;
     }
 
+    public boolean isDamaged() {
+        return this.status == BookStatus.DAMAGED;
+    }
+
     public BookCategoriesChangedEvent changeCategories(BookCategories newBookCategories) {
         if (newBookCategories == null) {
             throw BookException.emptyCategories();
