@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,5 +33,31 @@ class RentalHistoryJpaRepositoryTest {
         RentalHistoryEntity result = rentalHistoryJpaRepository.findById(savedRentalHistoryEntity.getId()).orElseThrow();
 
         assertEquals(savedRentalHistoryEntity.getId(), result.getId());
+    }
+
+    @Test
+    void 삭제한_대여히스토리를_조회되지_않는다() {
+        BookEntity bookEntity1 = new BookEntity("JPA1", "김영한1");
+        BookEntity bookEntity2 = new BookEntity("JPA2", "김영한2");
+        BookEntity savedBookEntity1 = bookJpaRepository.save(bookEntity1);
+        BookEntity savedBookEntity2 = bookJpaRepository.save(bookEntity2);
+        RentalHistoryEntity rentalHistoryEntity1 = new RentalHistoryEntity(
+                savedBookEntity1,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(30)
+        );
+        RentalHistoryEntity rentalHistoryEntity2 = new RentalHistoryEntity(
+                savedBookEntity2,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(30)
+        );
+        rentalHistoryJpaRepository.save(rentalHistoryEntity1);
+        rentalHistoryJpaRepository.save(rentalHistoryEntity2);
+
+        rentalHistoryJpaRepository.delete(rentalHistoryEntity1);
+        bookJpaRepository.delete(savedBookEntity1);
+        List<RentalHistoryEntity> entities = rentalHistoryJpaRepository.findAll();
+
+        assertEquals(1, entities.size());
     }
 }
