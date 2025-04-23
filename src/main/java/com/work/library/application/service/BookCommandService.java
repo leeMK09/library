@@ -28,6 +28,7 @@ public class BookCommandService {
         return savedBook.getId();
     }
 
+    @Transactional
     public void changeBookCategories(Book book, BookCategories newBookCategories) {
         BookCategoriesChangedEvent event = book.changeCategories(newBookCategories);
         eventPublisher.publishEvent(event);
