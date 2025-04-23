@@ -60,4 +60,21 @@ class RentalHistoryJpaRepositoryTest {
 
         assertEquals(1, entities.size());
     }
+
+    @Test
+    void 대여한_책을_통해_대여이력을_조회할_수_있다() {
+        BookEntity bookEntity = new BookEntity("JPA1", "김영한1");
+        BookEntity savedBookEntity = bookJpaRepository.save(bookEntity);
+        RentalHistoryEntity rentalHistoryEntity = new RentalHistoryEntity(
+                savedBookEntity,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(30)
+        );
+        rentalHistoryJpaRepository.save(rentalHistoryEntity);
+
+        RentalHistoryEntity result = rentalHistoryJpaRepository.findByBook(savedBookEntity).orElseThrow();
+        BookEntity foundBookByResult = result.getBook();
+
+        assertEquals(savedBookEntity.getId(), foundBookByResult.getId());
+    }
 }

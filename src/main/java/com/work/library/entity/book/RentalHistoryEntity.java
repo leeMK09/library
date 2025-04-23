@@ -38,4 +38,16 @@ public class RentalHistoryEntity extends BaseEntity {
     public Long getId() {
         return id;
     }
+
+    public BookEntity getBook() {
+        return book;
+    }
+
+    public LocalDateTime getRentedAt() {
+        return rentedAt;
+    }
+
+    public LocalDateTime getExpiredAt() {
+        return expiredAt;
+    }
 }

@@ -10,6 +10,7 @@ import com.work.library.domain.book.Author;
 import com.work.library.domain.book.Book;
 import com.work.library.domain.book.BookCategories;
 import com.work.library.domain.category.Category;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,13 +36,25 @@ class BookCategoriesUpdateApplicationTest {
     @InjectMocks
     private BookCategoriesUpdateApplication bookCategoriesUpdateApplication;
 
-    @Test
-    void 카테고리_변경시_존재하지않는_카테고리로_변경할_경우_예외가_발생한다() {
-        ChangeBookCategoriesCommand commend = new ChangeBookCategoriesCommand(
+    private ChangeBookCategoriesCommand commend;
+
+    private Category category1;
+
+    private Category category2;
+
+    @BeforeEach
+    void setUp() {
+
+        commend = new ChangeBookCategoriesCommand(
                 1L,
                 List.of(1L, 2L)
         );
+        category1 = new Category(1L, "문학");
+        category2 = new Category(2L, "IT");
+    }
 
+    @Test
+    void 카테고리_변경시_존재하지않는_카테고리로_변경할_경우_예외가_발생한다() {
         when(categoryQueryService.findAllByIds(commend.newCategoryIdList()))
                 .thenReturn(List.of());
 
@@ -56,8 +69,6 @@ class BookCategoriesUpdateApplicationTest {
 
     @Test
     void 카테고리_변경시_카테고리_중_존재하지_않는_카테고리가_있다면_예외가_발생한다() {
-        Category category1 = new Category(1L, "문학");
-        Category category2 = new Category(2L, "IT");
         ChangeBookCategoriesCommand commend = new ChangeBookCategoriesCommand(
                 1L,
                 List.of(category1.getId(), category2.getId())
@@ -78,8 +89,6 @@ class BookCategoriesUpdateApplicationTest {
     @Test
     void 도서의_카테고리를_변경할_수_있다() {
         Long bookId = 1L;
-        Category category1 = new Category(1L, "문학");
-        Category category2 = new Category(2L, "IT");
         BookCategories bookCategories = new BookCategories(List.of(category1, category2));
         ChangeBookCategoriesCommand commend = new ChangeBookCategoriesCommand(
                 bookId,

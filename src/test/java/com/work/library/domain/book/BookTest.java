@@ -122,4 +122,25 @@ class BookTest {
         assertTrue(damaged);
         assertFalse(unDamaged);
     }
+
+    @Test
+    void 책을_대여할_수_있다() {
+        Book book = new Book("JPA", new Author("김영한"), categoriesFixture);
+        book.rental();
+
+        assertEquals(BookStatus.RENTED, book.getStatus());
+    }
+
+    @Test
+    void 책은_자신이_대여중인지_판단할_수_있다() {
+        Book rentedBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book normalBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        rentedBook.rental();
+
+        boolean rented = rentedBook.isRented();
+        boolean unRented = normalBook.isRented();
+
+        assertTrue(rented);
+        assertFalse(unRented);
+    }
 }

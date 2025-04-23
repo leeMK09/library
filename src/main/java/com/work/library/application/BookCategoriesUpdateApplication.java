@@ -44,7 +44,7 @@ public class BookCategoriesUpdateApplication {
                     command.newCategoryIdList().size(),
                     newCategories.size()
             );
-            throw BookApplicationException.invalidParameterByCategory();
+            throw BookApplicationException.notFoundCategories();
         }
         BookCategories newBookCategories = new BookCategories(newCategories);
         bookCommandService.changeBookCategories(book, newBookCategories);

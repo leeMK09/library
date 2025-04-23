@@ -42,7 +42,7 @@ public class BookRegisterApplication {
                     command.categoryIdList().size(),
                     categories.size()
             );
-            throw BookApplicationException.invalidParameterByCategory();
+            throw BookApplicationException.notFoundCategories();
         }
         Optional<Book> existBook = bookQueryService.searchByTitleAndAuthor(command.title(), command.author());
 
@@ -51,7 +51,7 @@ public class BookRegisterApplication {
                     "[BookRegisterApplication] 요청한 지은이와 책 제목이 모두 일치하는 책이 이미 등록되어있습니다. requested book id = {}",
                     existBook.get().getId()
             );
-            throw BookApplicationException.duplicatedDateByBook();
+            throw BookApplicationException.duplicatedBooks();
         }
 
         Long savedBookId = bookCommandService.save(command.toDomain(categories));
