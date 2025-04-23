@@ -30,6 +30,7 @@ public class BookEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Comment("책 상태")
     private BookStatus status = BookStatus.AVAILABLE;
 
     protected BookEntity() {}
