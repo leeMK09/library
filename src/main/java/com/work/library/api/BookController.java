@@ -83,6 +83,19 @@ public class BookController {
         );
     }
 
+    @PostMapping("/{bookId}/rental")
+    public Response<ChangeBookResponse> rental(
+            @PathVariable Long bookId
+    ) {
+        Long rentedBookId = bookUpdateApplication.rental(bookId);
+        ChangeBookResponse response = new ChangeBookResponse(rentedBookId);
+        return Response.create(
+                ResponseType.SUCCESS,
+                ResponseMessage.BookResponseMessage.SUCCESS_BOOK_CHANGE,
+                response
+        );
+    }
+
     @PatchMapping("/{bookId}/categories")
     public Response<ChangeBookCategoriesResponse> changeCategories(
             @PathVariable Long bookId,
