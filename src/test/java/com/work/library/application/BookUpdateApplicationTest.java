@@ -53,7 +53,21 @@ class BookUpdateApplicationTest {
     }
 
     @Test
-    void 도서가_이미_대여중이라면_예외가_발생한다() {
+    void 도서가_대여중_이라면_훼손될_수_없다() {
+        book.rental();
+        when(bookQueryService.getById(book.getId())).thenReturn(book);
+
+        BookApplicationException exception = assertThrows(BookApplicationException.class, () -> {
+            bookUpdateApplication.damage(book.getId());
+        });
+        assertEquals(
+                ErrorType.RESOURCE_NOT_FOUND,
+                exception.getType()
+        );
+    }
+
+    @Test
+    void 도서_대여_요청시_이미_대여중이라면_예외가_발생한다() {
         book.rental();
 
         when(bookQueryService.getById(book.getId())).thenReturn(book);

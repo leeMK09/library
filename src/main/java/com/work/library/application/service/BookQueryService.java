@@ -24,8 +24,8 @@ public class BookQueryService {
         return result;
     }
 
-    public List<Book> searchByTitleOrAuthor(String title, String author) {
-        List<Book> result = bookRepository.searchByTitleOrAuthor(title, author);
+    public List<Book> searchAllByTitleOrAuthor(String title, String author) {
+        List<Book> result = bookRepository.searchAllByTitleOrAuthor(title, author);
         return result;
     }
 

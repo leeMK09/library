@@ -97,7 +97,6 @@ public class Book {
 
         return new BookCategoriesChangedEvent(
                 this,
-                newBookCategories,
                 LocalDateTime.now()
         );
     }

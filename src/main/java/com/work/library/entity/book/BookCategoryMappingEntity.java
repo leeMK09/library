@@ -41,4 +41,8 @@ public class BookCategoryMappingEntity extends BaseEntity {
     public BookEntity getBook() {
         return book;
     }
+
+    public boolean isMappedTo(BookEntity book) {
+        return this.book.equals(book);
+    }
 }

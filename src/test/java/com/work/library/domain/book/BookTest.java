@@ -3,6 +3,7 @@ package com.work.library.domain.book;
 import com.work.library.domain.ErrorMessage;
 import com.work.library.domain.book.exception.BookException;
 import com.work.library.domain.category.Category;
+import com.work.library.entity.book.BookEntity;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookTest {
-    private final BookCategories categoriesFixture = new BookCategories(
+    private final BookCategories anyThingCategories = new BookCategories(
         List.of(new Category("문학"))
     );
 
@@ -18,7 +19,7 @@ class BookTest {
     void null_제목으로_Book을_생성하면_예외가_발생한다() {
         BookException exception = assertThrows(
                 BookException.class,
-                () -> new Book(null, new Author("김영한"), categoriesFixture)
+                () -> new Book(null, new Author("김영한"), anyThingCategories)
         );
 
         assertEquals(ErrorMessage.TITLE_BLANK, exception.getMessage());
@@ -28,7 +29,7 @@ class BookTest {
     void 빈_제목으로_Book을_생성하면_예외가_발생한다() {
         BookException exception = assertThrows(
                 BookException.class,
-                () -> new Book(" ", new Author("김영한"), categoriesFixture)
+                () -> new Book(" ", new Author("김영한"), anyThingCategories)
         );
 
         assertEquals(ErrorMessage.TITLE_BLANK, exception.getMessage());
@@ -38,7 +39,7 @@ class BookTest {
     void 빈_저자로_Book을_생성하면_예외가_발생한다() {
         BookException exception = assertThrows(
                 BookException.class,
-                () -> new Book("JPA", null, categoriesFixture)
+                () -> new Book("JPA", null, anyThingCategories)
         );
 
         assertEquals(ErrorMessage.AUTHOR_EMPTY, exception.getMessage());
@@ -60,7 +61,7 @@ class BookTest {
     void 유효한_지은이_제목_카테고리_리스트로_Book을_생성하면_정상적으로_생성된다() {
         String title = "JPA";
         Author author = new Author("김영한");
-        Book book = new Book(title, author, categoriesFixture);
+        Book book = new Book(title, author, anyThingCategories);
 
         assertNotNull(book);
         assertEquals(title, book.getTitle());
@@ -72,7 +73,7 @@ class BookTest {
     void 책은_훼손될_수_있다() {
         String title = "JPA";
         Author author = new Author("김영한");
-        Book book = new Book(title, author, categoriesFixture);
+        Book book = new Book(title, author, anyThingCategories);
 
         book.damaged();
         BookStatus status = book.getStatus();
@@ -112,8 +113,8 @@ class BookTest {
 
     @Test
     void 책은_자신이_훼손되었는지_판단할_수_있다() {
-        Book damagedBook = new Book("JPA", new Author("김영한"), categoriesFixture);
-        Book normalBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book damagedBook = new Book("JPA", new Author("김영한"), anyThingCategories);
+        Book normalBook = new Book("JPA", new Author("김영한"), anyThingCategories);
         damagedBook.damaged();
 
         boolean damaged = damagedBook.isDamaged();
@@ -125,7 +126,7 @@ class BookTest {
 
     @Test
     void 책을_대여할_수_있다() {
-        Book book = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book book = new Book("JPA", new Author("김영한"), anyThingCategories);
         book.rental();
 
         assertEquals(BookStatus.RENTED, book.getStatus());
@@ -133,8 +134,8 @@ class BookTest {
 
     @Test
     void 책은_자신이_대여중인지_판단할_수_있다() {
-        Book rentedBook = new Book("JPA", new Author("김영한"), categoriesFixture);
-        Book normalBook = new Book("JPA", new Author("김영한"), categoriesFixture);
+        Book rentedBook = new Book("JPA", new Author("김영한"), anyThingCategories);
+        Book normalBook = new Book("JPA", new Author("김영한"), anyThingCategories);
         rentedBook.rental();
 
         boolean rented = rentedBook.isRented();
@@ -142,5 +143,25 @@ class BookTest {
 
         assertTrue(rented);
         assertFalse(unRented);
+    }
+
+    @Test
+    void 도메인에_올바른_엔티티를_생성할_수_있다() {
+        Book book = new Book("JPA", new Author("김영한"), anyThingCategories);
+
+        BookEntity entity = book.toEntity();
+
+        assertEquals("JPA", entity.getTitle());
+        assertEquals("김영한", entity.getAuthor());
+    }
+
+    @Test
+    void 이미_영속화된_도메인이라면_ID를_포함한_엔티티를_생성할_수_있다() {
+        Book book = new Book(1L, "JPA", new Author("김영한"), BookStatus.AVAILABLE, anyThingCategories);
+
+        BookEntity entity = book.toRegisteredEntity();
+
+        assertNotNull(entity.getId());
+        assertEquals(1L, entity.getId());
     }
 }

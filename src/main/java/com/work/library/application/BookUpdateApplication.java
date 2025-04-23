@@ -24,6 +24,10 @@ public class BookUpdateApplication {
 
     public Long damage(Long bookId) {
         Book book = bookQueryService.getById(bookId);
+        if (book.isRented()) {
+            log.error("[BookUpdateApplication] 해당 도서는 대여중 입니다. found book Id : {}", book.getId());
+            throw BookApplicationException.notFoundBooks();
+        }
         book.damaged();
         Long savedId = bookCommandService.save(book);
         return savedId;
