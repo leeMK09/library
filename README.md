@@ -20,3 +20,46 @@
 # ERD 
 
 ![erd.png](./docs/images/erd.png)
+
+</br>
+
+# 아키텍쳐 
+
+- Controller
+- Service (Application)
+- Repository
+
+각 레이어는 자신의 하위 레이어만 참조하여 사용하도록 정의 
+
+레이어 흐름 
+Controller -> Service -> Repository
+
+</br>
+
+## 아키텍쳐 컨벤션 
+
+**Controller**
+- API 요청에 대한 DTO 는 `Request` 접미사를 붙이는 형태
+- API 응답에 대한 DTO 는 `Response` 접미사를 붙이는 형태
+
+**Service**
+- Service 는 비즈니스 로직이 담긴 형태의 서비스 구조
+  - 추가로 각 Service 를 혼합한 형태의 `Application` 를 추가할 수 있다 (Facade 개념)
+ - Command (Mutation) 과 Query 를 분리하여 작성한다
+ - 요청에 대한 DTO 는 `Command` 접미사를 붙이는 형태
+ - 응답에 대한 DTO 는 `Result` 접미사를 붙이는 형태
+
+**Repository**
+- Repository 는 영속성 레이어의 구조
+- 영속성 방법은 다양하므로 변경되지 않을 Interface 와 그에 대한 구현체를 따로 정의해야함
+  - ex. `BookJpaRepository` / `BookRepository` (Interface)
+ - 변경되지 않을 Interface 는 Domain 영역에 존재하도록
+
+</br>
+
+## 도메인 과 엔티티 분리
+
+- POJO 형태로 도메인을 먼저 개발한 후 ORM 형태의 엔티티를 추가
+- 이유
+  - 중요한 도메인은 다른 기술에 속하지 않도록 정의
+  - ORM 에 대한 필드 혹은 속성은 도메인과 분리하도록 -> 도메인은 비즈니스 로직만 내부에 존재하도록  
